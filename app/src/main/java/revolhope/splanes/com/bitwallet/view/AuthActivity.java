@@ -5,8 +5,11 @@ import android.app.KeyguardManager;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 
 import revolhope.splanes.com.bitwallet.R;
@@ -62,28 +65,43 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private boolean checkFingerprintRequirement(KeyguardManager keyguardManager,
-                                                FingerprintManager fingerprintManager) {
-        //Check whether the device has a fingerprint sensor//
+                                                @NonNull FingerprintManager fingerprintManager) {
+
+        View view = findViewById(R.id.auth_layout);
+
         if (!fingerprintManager.isHardwareDetected()) {
-            // SNACKBAR WITH: ("Your device doesn't support fingerprint authentication");
+
+            Snackbar.make(view,
+                    "Your device doesn't support fingerprint authentication",
+                    Snackbar.LENGTH_INDEFINITE).show();
+
             return false;
         }
         if (ActivityCompat.checkSelfPermission(this,
                                                 Manifest.permission.USE_FINGERPRINT) !=
             PackageManager.PERMISSION_GRANTED) {
-            // If your app doesn't have this permission, then display the following text//
-            // SNACKBAR WITH: ("Please enable the fingerprint permission");
-            // TODO: throw permission dialog¿?
+
+            Snackbar.make(view,
+                    "Please enable the fingerprint permission",
+                    Snackbar.LENGTH_INDEFINITE).show();
+            // TODO: throw permission dialog or set in action button on snack bar¿?
             return false;
         }
         if (!fingerprintManager.hasEnrolledFingerprints()) {
-          // If the user hasn’t configured any fingerprints, then display the following message//
-          // SNACKBAR WITH: ("No fingerprint configured. Please register at least one fingerprint in your device's Settings");
+
+            Snackbar.make(view,
+                    "No fingerprint configured. Please register at least one" +
+                            " fingerprint in your device's Settings",
+                    Snackbar.LENGTH_INDEFINITE).show();
+
             return false;
         }
         if (!keyguardManager.isKeyguardSecure()) {
-          // If the user hasn’t secured their lockscreen with a PIN password or pattern, then display the following text//
-          // SNACKBAR WITH: ("Please enable lockscreen security in your device's Settings");
+
+            Snackbar.make(view,
+                    "Please enable lockscreen security in your device's Settings",
+                    Snackbar.LENGTH_INDEFINITE).show();
+
             return false;
         }
         return true;

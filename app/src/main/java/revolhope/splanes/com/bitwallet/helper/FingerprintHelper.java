@@ -2,7 +2,9 @@ package revolhope.splanes.com.bitwallet.helper;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -26,6 +28,8 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+
+import revolhope.splanes.com.bitwallet.view.MainActivity;
 
 public abstract class FingerprintHelper {
 
@@ -113,7 +117,6 @@ public abstract class FingerprintHelper {
 
         // Implement the startAuth method,
         // which is responsible for starting the fingerprint authentication process
-
         public void startAuth(FingerprintManager manager,
                               FingerprintManager.CryptoObject cryptoObject) {
 
@@ -158,7 +161,13 @@ public abstract class FingerprintHelper {
         // to one of the fingerprints stored on the user’s device
         @Override
         public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-            Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+
+            Intent i = new Intent(context, MainActivity.class);
+            context.startActivity(i);
+            if (context instanceof Activity)
+            {
+                ((Activity) context).finish();
+            }
         }
     }
 

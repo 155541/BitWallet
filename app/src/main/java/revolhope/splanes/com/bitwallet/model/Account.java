@@ -1,5 +1,7 @@
 package revolhope.splanes.com.bitwallet.model;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
@@ -125,15 +127,16 @@ public class Account implements Serializable {
         this.directoryId = directoryId;
     }
 
+    @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account1 = (Account) o;
         return expire == account1.expire &&
-                dateCreate == account1.dateCreate &&
-                dateUpdate == account1.dateUpdate &&
-                dateExpire == account1.dateExpire &&
+                Objects.equals(dateCreate, account1.dateCreate) &&
+                Objects.equals(dateUpdate, account1.dateUpdate) &&
+                Objects.equals(dateExpire, account1.dateExpire) &&
                 _id.equals(account1._id) &&
                 account.equals(account1.account) &&
                 Objects.equals(user, account1.user) &&

@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import revolhope.splanes.com.bitwallet.crypto.Cryptography;
 import revolhope.splanes.com.bitwallet.db.contracts.AccKContract;
 import revolhope.splanes.com.bitwallet.db.contracts.AccountContract;
 import revolhope.splanes.com.bitwallet.db.contracts.DirectoryContract;
