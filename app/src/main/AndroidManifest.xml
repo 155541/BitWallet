@@ -3,6 +3,7 @@
     package="revolhope.splanes.com.bitwallet">
     
     <uses-feature android:name="android.hardware.fingerprint" android:required="false"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     
     <application
         android:allowBackup="true"
