@@ -36,9 +36,9 @@ public abstract class FingerprintHelper {
         private KeyStore keyStore;
         private Cipher cipher;
 
-        public void genKey()  {
-            try {
+        public void genKey() throws FingerException {
 
+            try {
                 keyStore = KeyStore.getInstance("AndroidKeyStore");
                 KeyGenerator keyGenerator = KeyGenerator.getInstance(
                         KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
@@ -54,10 +54,7 @@ public abstract class FingerprintHelper {
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7);
 
                 keyGenerator.init(builder.build());
-
                 keyGenerator.generateKey();
-
-
             }
             catch ( KeyStoreException |
                     NoSuchAlgorithmException |
@@ -66,6 +63,7 @@ public abstract class FingerprintHelper {
                     CertificateException |
                     InvalidAlgorithmParameterException e) {
 
+                throw new FingerException("Error while generate key. Stacktrace:" + e.getMessage());
             }
         }
 
@@ -162,5 +160,14 @@ public abstract class FingerprintHelper {
         public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
             Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static class FingerException extends Exception {
+        private String error;
+        private FingerException(String error)
+        {
+            this.error = error;
+        }
+        public String getError() { return error; }
     }
 }

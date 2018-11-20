@@ -1,15 +1,25 @@
 package revolhope.splanes.com.bitwallet.view;
 
+import android.Manifest;
+import android.app.KeyguardManager;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+
+import revolhope.splanes.com.bitwallet.R;
+import revolhope.splanes.com.bitwallet.helper.FingerprintHelper;
 
 public class AuthActivity extends AppCompatActivity {
     
     
     private ImageView[] ivPattern = new ImageView[9];
     private int[] patternImageViewIds = new int[]{
-        imageView_pattern11,imageView_pattern12,imageView_pattern13
-        imageView_pattern21,imageView_pattern22,imageView_pattern23
-        imageView_pattern31,imageView_pattern32,imageView_pattern33
+            R.id.imageView_pattern11, R.id.imageView_pattern12, R.id.imageView_pattern13,
+            R.id.imageView_pattern21, R.id.imageView_pattern22, R.id.imageView_pattern23,
+            R.id.imageView_pattern31, R.id.imageView_pattern32, R.id.imageView_pattern33
     };
     
     @Override
@@ -19,24 +29,28 @@ public class AuthActivity extends AppCompatActivity {
         
         bindImageViewPattern();
         
-        KeyguardManager keyguardManager = 
+        KeyguardManager keyguardManager =
             (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        FingerprintManager fingerprintManager = 
+        FingerprintManager fingerprintManager =
             (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
         
-        if (checkFingerprintRequirement(keyguardManager, fingerprintManager)) {
+        if (fingerprintManager != null &&
+            checkFingerprintRequirement(keyguardManager, fingerprintManager)) {
+
             try  {
+
                 FingerprintHelper.Util fingerUtil = new FingerprintHelper.Util();
-                fingerUtil.generateKey();
-                if (fingerUtil.initCipher())
-                {
-                    CryptoObject cryptoObj = new FingerprintHelper.CryptoObject(fingerUtil.getCipher());
-                    FingerprintHelper.AuthCallback callback = new FingerprintHelper.AuthCallback(this);
-                    callback.startAuth(fingerprintManager, cryptoObject);
+                fingerUtil.genKey();
+                if (fingerUtil.initCipher()) {
+                    FingerprintManager.CryptoObject cryptoObj =
+                            new FingerprintManager.CryptoObject(fingerUtil.getCipher());
+                    FingerprintHelper.AuthCallback callback =
+                            new FingerprintHelper.AuthCallback(this);
+                    callback.startAuth(fingerprintManager, cryptoObj);
                 }
             }
             catch(FingerprintHelper.FingerException exc) {
-                exc.printStackTrace();
+                System.err.println(exc.getError());
             }
         }
     }
@@ -54,7 +68,8 @@ public class AuthActivity extends AppCompatActivity {
             // SNACKBAR WITH: ("Your device doesn't support fingerprint authentication");
             return false;
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != 
+        if (ActivityCompat.checkSelfPermission(this,
+                                                Manifest.permission.USE_FINGERPRINT) !=
             PackageManager.PERMISSION_GRANTED) {
             // If your app doesn't have this permission, then display the following text//
             // SNACKBAR WITH: ("Please enable the fingerprint permission");
