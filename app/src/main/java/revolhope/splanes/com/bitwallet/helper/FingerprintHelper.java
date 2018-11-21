@@ -29,11 +29,25 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import revolhope.splanes.com.bitwallet.crypto.KeyStoreHelper;
 import revolhope.splanes.com.bitwallet.view.MainActivity;
 
 public abstract class FingerprintHelper {
 
-    private static final String NAME = "finger-key";
+    private static final char[] fingerprintIndex =
+            new char[] {'f','i','n','g','e','r','p','r','i','n','t','.','k','e','y'};
+
+    private static final char[] fingerprintPwd =
+            new char[] {'x','-','e','D','?','W','3','p','L',';'};
+
+    public static void init()
+    {
+        if (!KeyStoreHelper.existsAlias(AppUtils.toString(fingerprintIndex)))
+        {
+
+        }
+    }
+
 
     public static class Util
     {
@@ -43,6 +57,10 @@ public abstract class FingerprintHelper {
         public void genKey() throws FingerException {
 
             try {
+
+
+
+
                 keyStore = KeyStore.getInstance("AndroidKeyStore");
                 KeyGenerator keyGenerator = KeyGenerator.getInstance(
                         KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
@@ -84,7 +102,15 @@ public abstract class FingerprintHelper {
             }
 
             try {
+
+                if (keyStore == null) keyStore = KeyStore.getInstance("AndroidKeyStore");
                 keyStore.load(null);
+                if (keyStore.containsAlias(NAME))
+                {
+                    System.out.println(" :......: POPO :D :......: ");
+                }
+
+
                 SecretKey key = (SecretKey) keyStore.getKey(NAME, null);
                 cipher.init(Cipher.ENCRYPT_MODE, key);
                 return true;

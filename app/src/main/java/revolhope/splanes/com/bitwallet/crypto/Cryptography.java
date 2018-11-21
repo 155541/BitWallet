@@ -1,27 +1,125 @@
 package revolhope.splanes.com.bitwallet.crypto;
 
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public abstract class Cryptography {
+public final class Cryptography {
 
-    private static Crypto crypto;
-    private static SecureRandom secureRandom;
-    
+    private KeyStore ks;
+    private Cipher c;
+    private byte[] iv;
+
+    public Cryptography() throws Exception {
+        init();
+    }
+
+    public SecretKey newKey(@NonNull String alias) throws Exception {
+
+        KeyGenerator kg = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,
+                                                  "AndroidKeyStore");
+
+        KeyGenParameterSpec.Builder builder =  new KeyGenParameterSpec.Builder(
+                alias,KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT);
+
+        builder.setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setUserAuthenticationRequired(false)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE);
+
+        kg.init(builder.build());
+        return kg.generateKey();
+    }
+
+    public void delete(@NonNull String alias) throws Exception {
+        ks.deleteEntry(alias);
+    }
+
+    @Nullable
+    public byte[] encrypt(@NonNull byte[] data, @NonNull String alias) {
+
+        try {
+            SecretKey k = (SecretKey) ks.getKey(alias, null);
+            if (c == null) {
+                c = Cipher.getInstance( KeyProperties.KEY_ALGORITHM_AES + "/" +
+                                        KeyProperties.BLOCK_MODE_GCM + "/" +
+                                        KeyProperties.ENCRYPTION_PADDING_NONE);
+            }
+            byte[] bytes = c.doFinal(data);
+            GCMParameterSpec spec = c.getParameters().getParameterSpec(GCMParameterSpec.class);
+            return bytes;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Nullable
+    public byte[] decrypt(@NonNull byte[] data, @NonNull String alias) {
+
+        try {
+            SecretKey k = (SecretKey) ks.getKey(alias, null);
+            if (c == null) {
+                c = Cipher.getInstance( KeyProperties.KEY_ALGORITHM_AES + "/" +
+                        KeyProperties.BLOCK_MODE_GCM + "/" +
+                        KeyProperties.ENCRYPTION_PADDING_NONE);
+            }
+            c.init(Cipher.DECRYPT_MODE, k);
+            byte[] bytes = c.doFinal(data);
+            iv = c.getIV();
+            return bytes;
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+
+
+
+    public boolean existsAlias(@NonNull String alias) throws Exception {
+        return ks.containsAlias(alias);
+    }
+
+    @Contract(pure = true)
+    public byte[] getIv() { return this.iv; }
+
+    private void init() throws Exception {
+        ks = KeyStore.getInstance("AndroidKeyStore");
+        ks.load(null);
+    }
+
+
+
+
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+
+
+
+
     @NonNull
     @Contract(" -> new")
     public static Crypto buildInstance()

@@ -218,9 +218,9 @@ public class AppDatabase extends SQLiteOpenHelper {
                         DirectoryContract.TABLE,
                         DirectoryContract.COLUMNS,
                         DirectoryContract.COLUMN_PARENT +
-                                " = SELECT " + DirectoryContract.COLUMN_ID + " FROM " +
+                                " = (SELECT " + DirectoryContract.COLUMN_ID + " FROM " +
                                 DirectoryContract.TABLE +
-                                " WHERE NAME = ?",
+                                " WHERE NAME = ?)",
                         new String[] {"Root"},
                         null,
                         null,
@@ -563,10 +563,10 @@ public class AppDatabase extends SQLiteOpenHelper {
                 try(Cursor c = db.query(
                         AccountContract.TABLE,
                         AccountContract.COLUMNS,
-                        AccountContract.COLUMN_PARENT + " = " +
+                        AccountContract.COLUMN_PARENT + " = (" +
                                 "SELECT " + DirectoryContract.COLUMN_ID + " FROM " +
                                 DirectoryContract.TABLE + " WHERE " + DirectoryContract.COLUMN_NAME +
-                                " = ?",
+                                " = ?)",
                         new String[]{"Root"},
                         null,
                         null,

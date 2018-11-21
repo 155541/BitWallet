@@ -14,6 +14,16 @@ public final class AppUtils {
         return new SimpleDateFormat(format, Locale.ENGLISH).format(time);
     }
 
+    @NonNull
+    public static String toString(@NonNull char[] array)
+    {
+        StringBuilder sb = new StringBuilder(array.length);
+        for (char c : array) {
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
     public static byte[] toBase64(@NonNull byte[] bytes)
     {
         return Base64.encode(bytes, Base64.DEFAULT);
