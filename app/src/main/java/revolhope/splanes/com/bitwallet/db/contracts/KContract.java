@@ -17,7 +17,7 @@ public interface KContract {
     String STATEMENT_CREATE =
             "CREATE TABLE K(" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_ACC_ID + " VARCHAR() NOT NULL,
+            COLUMN_ACC_ID + " VARCHAR() NOT NULL," +
             COLUMN_CRYPTO_PWD + " BLOB NOT NULL," +
             COLUMN_PARAM_IV + " BLOB NOT NULL," +
             COLUMN_PARAM_TLENGRH + " INTEGER NOT NULL,"
