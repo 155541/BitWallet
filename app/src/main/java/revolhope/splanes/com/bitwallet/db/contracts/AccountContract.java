@@ -8,7 +8,6 @@ public interface AccountContract {
     String COLUMN_ACCOUNT = "ACCOUNT";
     String COLUMN_USER = "USER";
     String COLUMN_URL = "URL";
-    String COLUMN_PWD = "PWD";
     String COLUMN_BRIEF = "BRIEF";
     String COLUMN_DATE_CREATE = "DATE_CREATE";
     String COLUMN_DATE_UPDATE = "DATE_UPDATE";
@@ -18,7 +17,7 @@ public interface AccountContract {
 
     String[] COLUMNS = new String[] {
             COLUMN_ID,COLUMN_ACCOUNT, COLUMN_USER, COLUMN_URL,
-            COLUMN_PWD, COLUMN_BRIEF, COLUMN_DATE_CREATE, COLUMN_DATE_UPDATE,
+            COLUMN_BRIEF, COLUMN_DATE_CREATE, COLUMN_DATE_UPDATE,
             COLUMN_EXPIRE, COLUMN_DATE_EXPIRE, COLUMN_PARENT };
 
     String STATEMENT_CREATE =
@@ -27,7 +26,6 @@ public interface AccountContract {
             COLUMN_ACCOUNT + " VARCHAR(50) NOT NULL," +
             COLUMN_USER + " VARCHAR(50) DEFAULT NULL," +
             COLUMN_URL + " VARCHAR(100) DEFAULT NULL," +
-            COLUMN_PWD + " VARCHAR(100) NOT NULL," +
             COLUMN_BRIEF + " VARCHAR(200) DEFAULT NULL," +
             COLUMN_DATE_CREATE + " INTEGER NOT NULL," +
             COLUMN_DATE_UPDATE + " INTEGER DEFAULT NULL," +
