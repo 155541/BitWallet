@@ -12,21 +12,22 @@ public class Account implements Serializable {
     private String account;
     private String user;
     private String url;
-    private String password;
     private String brief;
     private boolean expire;
     private Long dateCreate;
     private Long dateUpdate;
     private Long dateExpire;
-    private Long directoryId;
+    private Long parent;
 
 
-    public Account(String _id, String account, String user, String url, String password, String brief, boolean expire, Long dateCreate, Long dateUpdate, Long dateExpire, Long directoryId) {
+    public Account(String _id, String account, String user, 
+                   String url, String brief, boolean expire,
+                   Long dateCreate, Long dateUpdate, Long dateExpire,
+                   Long directoryId) {
         this._id = _id;
         this.account = account;
         this.user = user;
         this.url = url;
-        this.password = password;
         this.brief = brief;
         this.expire = expire;
         this.dateCreate = dateCreate;
@@ -37,6 +38,7 @@ public class Account implements Serializable {
 
     // TODO: Delete constructor below & all setters?
     public Account() {
+        this._id = UUID.randomUUID().toString();
     }
 
     public String get_id() {
@@ -73,10 +75,6 @@ public class Account implements Serializable {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getBrief() {
