@@ -12,7 +12,7 @@ public interface KContract {
     String COLUMN_DEADLINE = "DEADLINE";
 
     String[] COLUMNS = new String[] {COLUMN_ID, COLUMN_ACC_ID, COLUMN_CRYPTO_PWD,
-                                     COLUMN_PARAMS, COLUMN_DEADLINE};
+                                     COLUMN_PARAM_IV, COLUMN_PARAM_TLENGTH, COLUMN_DEADLINE};
 
     String STATEMENT_CREATE =
             "CREATE TABLE K(" +
@@ -20,7 +20,7 @@ public interface KContract {
             COLUMN_ACC_ID + " VARCHAR() NOT NULL," +
             COLUMN_CRYPTO_PWD + " BLOB NOT NULL," +
             COLUMN_PARAM_IV + " BLOB NOT NULL," +
-            COLUMN_PARAM_TLENGRH + " INTEGER NOT NULL,"
+            COLUMN_PARAM_TLENGTH + " INTEGER NOT NULL," +
             COLUMN_DEADLINE + " INTEGER NOT NULL, " +
             "CONTRAINT FK_K FOREIGN KEY (" + COLUMN_ACC_ID + ") REFERENCES " + 
             AccountContract.TABLE + "(" + AccountContract.COLUMN_ID + ") " + 

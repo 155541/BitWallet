@@ -13,8 +13,6 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import revolhope.splanes.com.bitwallet.crypto.Cryptography;
-import revolhope.splanes.com.bitwallet.db.contracts.AccKContract;
 import revolhope.splanes.com.bitwallet.db.contracts.AccountContract;
 import revolhope.splanes.com.bitwallet.db.contracts.DirectoryContract;
 import revolhope.splanes.com.bitwallet.db.contracts.KContract;
@@ -54,7 +52,6 @@ public class AppDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DirectoryContract.STATEMENT_INSERT_ROOT);
         sqLiteDatabase.execSQL(AccountContract.STATEMENT_CREATE);
         sqLiteDatabase.execSQL(KContract.STATEMENT_CREATE);
-        sqLiteDatabase.execSQL(AccKContract.STATEMENT_CREATE);
     }
 
     @Override
@@ -63,7 +60,6 @@ public class AppDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DirectoryContract.TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + AccountContract.TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + KContract.TABLE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + AccKContract.TABLE);
 
         DB_VERSION = newVersion;
         onCreate(sqLiteDatabase);
@@ -492,7 +488,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                         String account;
                         String user;
                         String url;
-                        String pwd;
                         String brief;
                         Long create;
                         Long update;
@@ -505,7 +500,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                             account = c.getString(c.getColumnIndex(AccountContract.COLUMN_ACCOUNT));
                             user = c.getString(c.getColumnIndex(AccountContract.COLUMN_USER));
                             url = c.getString(c.getColumnIndex(AccountContract.COLUMN_URL));
-                            pwd = c.getString(c.getColumnIndex(AccountContract.COLUMN_PWD));
                             brief = c.getString(c.getColumnIndex(AccountContract.COLUMN_BRIEF));
                             create = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_CREATE));
                             update = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_UPDATE));
@@ -517,7 +511,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                                                  account,
                                                  user,
                                                  url,
-                                                 pwd,
                                                  brief,
                                                  expire,
                                                  create,
@@ -579,7 +572,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                         String account;
                         String user;
                         String url;
-                        String pwd;
                         String brief;
                         Long create;
                         Long update;
@@ -592,7 +584,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                             account = c.getString(c.getColumnIndex(AccountContract.COLUMN_ACCOUNT));
                             user = c.getString(c.getColumnIndex(AccountContract.COLUMN_USER));
                             url = c.getString(c.getColumnIndex(AccountContract.COLUMN_URL));
-                            pwd = c.getString(c.getColumnIndex(AccountContract.COLUMN_PWD));
                             brief = c.getString(c.getColumnIndex(AccountContract.COLUMN_BRIEF));
                             create = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_CREATE));
                             update = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_UPDATE));
@@ -604,7 +595,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                                     account,
                                     user,
                                     url,
-                                    pwd,
                                     brief,
                                     expire,
                                     create,
@@ -659,13 +649,12 @@ public class AppDatabase extends SQLiteOpenHelper {
                     values.put(AccountContract.COLUMN_ACCOUNT, acc.getAccount());
                     values.put(AccountContract.COLUMN_USER, acc.getUser());
                     values.put(AccountContract.COLUMN_URL, acc.getUrl());
-                    values.put(AccountContract.COLUMN_PWD, acc.getPassword());
                     values.put(AccountContract.COLUMN_BRIEF, acc.getBrief());
                     values.put(AccountContract.COLUMN_DATE_CREATE, acc.getDateCreate());
                     values.put(AccountContract.COLUMN_DATE_UPDATE, acc.getDateUpdate());
                     values.put(AccountContract.COLUMN_EXPIRE, acc.isExpire() ? 1 : 0);
                     values.put(AccountContract.COLUMN_DATE_EXPIRE, acc.getDateExpire());
-                    values.put(AccountContract.COLUMN_PARENT, acc.getDirectoryId());
+                    values.put(AccountContract.COLUMN_PARENT, acc.getParent());
 
                     long id = db.insert(DirectoryContract.TABLE, null, values);
                     if (id != -1)
@@ -711,13 +700,12 @@ public class AppDatabase extends SQLiteOpenHelper {
                     values.put(AccountContract.COLUMN_ACCOUNT, acc.getAccount());
                     values.put(AccountContract.COLUMN_USER, acc.getUser());
                     values.put(AccountContract.COLUMN_URL, acc.getUrl());
-                    values.put(AccountContract.COLUMN_PWD, acc.getPassword());
                     values.put(AccountContract.COLUMN_BRIEF, acc.getBrief());
                     values.put(AccountContract.COLUMN_DATE_CREATE, acc.getDateCreate());
                     values.put(AccountContract.COLUMN_DATE_UPDATE, acc.getDateUpdate());
                     values.put(AccountContract.COLUMN_EXPIRE, acc.isExpire() ? 1 : 0);
                     values.put(AccountContract.COLUMN_DATE_EXPIRE, acc.getDateExpire());
-                    values.put(AccountContract.COLUMN_PARENT, acc.getDirectoryId());
+                    values.put(AccountContract.COLUMN_PARENT, acc.getParent());
 
                     db.update(AccountContract.TABLE,
                             values,

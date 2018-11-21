@@ -9,27 +9,14 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
-import revolhope.splanes.com.bitwallet.crypto.KeyStoreHelper;
+import revolhope.splanes.com.bitwallet.crypto.Cryptography;
 import revolhope.splanes.com.bitwallet.view.MainActivity;
 
 public abstract class FingerprintHelper {
@@ -37,99 +24,15 @@ public abstract class FingerprintHelper {
     private static final char[] fingerprintIndex =
             new char[] {'f','i','n','g','e','r','p','r','i','n','t','.','k','e','y'};
 
-    private static final char[] fingerprintPwd =
-            new char[] {'x','-','e','D','?','W','3','p','L',';'};
+    public static Cipher getFingerprintCipher() throws Exception {
 
-    public static void init()
-    {
-        if (!KeyStoreHelper.existsAlias(AppUtils.toString(fingerprintIndex)))
-        {
-
+        Cryptography crypto = new Cryptography();
+        if (!crypto.existsAlias(AppUtils.toString(fingerprintIndex))) {
+            crypto.newKey(AppUtils.toString(fingerprintIndex));
         }
+        return crypto.getFingerprint(AppUtils.toString(fingerprintIndex));
     }
 
-
-    public static class Util
-    {
-        private KeyStore keyStore;
-        private Cipher cipher;
-
-        public void genKey() throws FingerException {
-
-            try {
-
-
-
-
-                keyStore = KeyStore.getInstance("AndroidKeyStore");
-                KeyGenerator keyGenerator = KeyGenerator.getInstance(
-                        KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-
-                keyStore.load(null);
-                KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(
-                                NAME,
-                                KeyProperties.PURPOSE_ENCRYPT |
-                                        KeyProperties.PURPOSE_DECRYPT);
-
-                builder.setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setUserAuthenticationRequired(true)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7);
-
-                keyGenerator.init(builder.build());
-                keyGenerator.generateKey();
-            }
-            catch ( KeyStoreException |
-                    NoSuchAlgorithmException |
-                    NoSuchProviderException |
-                    IOException |
-                    CertificateException |
-                    InvalidAlgorithmParameterException e) {
-
-                throw new FingerException("Error while generate key. Stacktrace:" + e.getMessage());
-            }
-        }
-
-        public boolean initCipher() {
-
-            try {
-                cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
-                                            KeyProperties.BLOCK_MODE_CBC + "/" +
-                                            KeyProperties.ENCRYPTION_PADDING_PKCS7);
-            }
-            catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-                e.printStackTrace();
-                return false;
-            }
-
-            try {
-
-                if (keyStore == null) keyStore = KeyStore.getInstance("AndroidKeyStore");
-                keyStore.load(null);
-                if (keyStore.containsAlias(NAME))
-                {
-                    System.out.println(" :......: POPO :D :......: ");
-                }
-
-
-                SecretKey key = (SecretKey) keyStore.getKey(NAME, null);
-                cipher.init(Cipher.ENCRYPT_MODE, key);
-                return true;
-            }
-            catch (KeyStoreException |
-                    CertificateException |
-                    UnrecoverableKeyException |
-                    IOException |
-                    NoSuchAlgorithmException |
-                    InvalidKeyException e) {
-
-                e.printStackTrace();
-                return false;
-            }
-
-        }
-
-        public Cipher getCipher() { return cipher; }
-    }
 
     @TargetApi(Build.VERSION_CODES.M)
     public static class AuthCallback extends FingerprintManager.AuthenticationCallback
@@ -192,17 +95,14 @@ public abstract class FingerprintHelper {
             context.startActivity(i);
             if (context instanceof Activity)
             {
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                if (vibrator != null) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500,
+                            VibrationEffect.DEFAULT_AMPLITUDE));
+                }
+
                 ((Activity) context).finish();
             }
         }
-    }
-
-    public static class FingerException extends Exception {
-        private String error;
-        private FingerException(String error)
-        {
-            this.error = error;
-        }
-        public String getError() { return error; }
     }
 }

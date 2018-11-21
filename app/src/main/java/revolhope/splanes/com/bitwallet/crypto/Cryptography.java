@@ -4,29 +4,22 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+
+import revolhope.splanes.com.bitwallet.helper.AppUtils;
+import revolhope.splanes.com.bitwallet.model.K;
 
 public final class Cryptography {
 
     private KeyStore ks;
     private Cipher c;
-    private byte[] iv;
 
     public Cryptography() throws Exception {
         init();
@@ -53,7 +46,7 @@ public final class Cryptography {
     }
 
     @Nullable
-    public byte[] encrypt(@NonNull byte[] data, @NonNull String alias) {
+    public K encrypt(@NonNull byte[] data, @NonNull String alias) {
 
         try {
             SecretKey k = (SecretKey) ks.getKey(alias, null);
@@ -62,9 +55,17 @@ public final class Cryptography {
                                         KeyProperties.BLOCK_MODE_GCM + "/" +
                                         KeyProperties.ENCRYPTION_PADDING_NONE);
             }
+
+            c.init(Cipher.ENCRYPT_MODE, k);
             byte[] bytes = c.doFinal(data);
             GCMParameterSpec spec = c.getParameters().getParameterSpec(GCMParameterSpec.class);
-            return bytes;
+
+            String pwd64 = AppUtils.toStringBase64(bytes);
+            K _k = new K();
+            _k.setPwdBase64(pwd64);
+            _k.setSpec(spec);
+
+            return _k;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +74,7 @@ public final class Cryptography {
     }
 
     @Nullable
-    public byte[] decrypt(@NonNull byte[] data, @NonNull String alias) {
+    public byte[] decrypt(@NonNull byte[] data, @NonNull K _k, @NonNull String alias) {
 
         try {
             SecretKey k = (SecretKey) ks.getKey(alias, null);
@@ -82,25 +83,29 @@ public final class Cryptography {
                         KeyProperties.BLOCK_MODE_GCM + "/" +
                         KeyProperties.ENCRYPTION_PADDING_NONE);
             }
-            c.init(Cipher.DECRYPT_MODE, k);
-            byte[] bytes = c.doFinal(data);
-            iv = c.getIV();
-            return bytes;
+            c.init(Cipher.DECRYPT_MODE, k, _k.getSpec());
+            return c.doFinal(data);
         }
         catch (Exception e) {
-
+            e.printStackTrace();
+            return null;
         }
     }
 
+    public Cipher getFingerprint(String alias) throws Exception {
 
-
+        if (c == null) {
+            c = Cipher.getInstance( KeyProperties.KEY_ALGORITHM_AES + "/" +
+                    KeyProperties.BLOCK_MODE_GCM + "/" +
+                    KeyProperties.ENCRYPTION_PADDING_NONE);
+        }
+        c.init(Cipher.ENCRYPT_MODE, ks.getKey(alias, null));
+        return c;
+    }
 
     public boolean existsAlias(@NonNull String alias) throws Exception {
         return ks.containsAlias(alias);
     }
-
-    @Contract(pure = true)
-    public byte[] getIv() { return this.iv; }
 
     private void init() throws Exception {
         ks = KeyStore.getInstance("AndroidKeyStore");
@@ -116,10 +121,7 @@ public final class Cryptography {
 // =================================================================================================
 // =================================================================================================
 // =================================================================================================
-
-
-
-
+    /*
     @NonNull
     @Contract(" -> new")
     public static Crypto buildInstance()
@@ -198,4 +200,5 @@ public final class Cryptography {
             else return null;
         }
     }
+    */
 }

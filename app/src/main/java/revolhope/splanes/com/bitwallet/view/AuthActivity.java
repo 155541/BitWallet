@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import revolhope.splanes.com.bitwallet.R;
+import revolhope.splanes.com.bitwallet.crypto.Cryptography;
 import revolhope.splanes.com.bitwallet.helper.FingerprintHelper;
 
 public class AuthActivity extends AppCompatActivity {
@@ -41,20 +42,17 @@ public class AuthActivity extends AppCompatActivity {
             checkFingerprintRequirement(fingerprintManager)) {
 
             try  {
-                FingerprintHelper.Util fingerUtil = new FingerprintHelper.Util();
 
+                FingerprintManager.CryptoObject cryptoObj =
+                        new FingerprintManager
+                                .CryptoObject(FingerprintHelper.getFingerprintCipher());
 
+                FingerprintHelper.AuthCallback callback =
+                        new FingerprintHelper.AuthCallback(this);
 
-                fingerUtil.genKey();
-                if (fingerUtil.initCipher()) {
-                    FingerprintManager.CryptoObject cryptoObj =
-                            new FingerprintManager.CryptoObject(fingerUtil.getCipher());
-                    FingerprintHelper.AuthCallback callback =
-                            new FingerprintHelper.AuthCallback(this);
-                    callback.startAuth(fingerprintManager, cryptoObj);
-                }
+                callback.startAuth(fingerprintManager, cryptoObj);
             }
-            catch(Exception exc /*FingerprintHelper.FingerException exc*/) {
+            catch(Exception exc) {
                 System.err.println(exc);
             }
         }

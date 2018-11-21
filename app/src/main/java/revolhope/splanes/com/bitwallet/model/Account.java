@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Account implements Serializable {
 
@@ -23,7 +24,7 @@ public class Account implements Serializable {
     public Account(String _id, String account, String user, 
                    String url, String brief, boolean expire,
                    Long dateCreate, Long dateUpdate, Long dateExpire,
-                   Long directoryId) {
+                   Long parent) {
         this._id = _id;
         this.account = account;
         this.user = user;
@@ -33,7 +34,7 @@ public class Account implements Serializable {
         this.dateCreate = dateCreate;
         this.dateUpdate = dateUpdate;
         this.dateExpire = dateExpire;
-        this.directoryId = directoryId;
+        this.parent = parent;
     }
 
     // TODO: Delete constructor below & all setters?
@@ -71,10 +72,6 @@ public class Account implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getBrief() {
@@ -117,12 +114,12 @@ public class Account implements Serializable {
         this.dateExpire = dateExpire;
     }
 
-    public Long getDirectoryId() {
-        return directoryId;
+    public Long getParent() {
+        return parent;
     }
 
-    public void setDirectoryId(Long directoryId) {
-        this.directoryId = directoryId;
+    public void setParent(Long parent) {
+        this.parent = parent;
     }
 
     @Contract(value = "null -> false", pure = true)
@@ -139,7 +136,7 @@ public class Account implements Serializable {
                 account.equals(account1.account) &&
                 Objects.equals(user, account1.user) &&
                 Objects.equals(url, account1.url) &&
-                password.equals(account1.password);
+                parent.equals(account1.parent);
     }
 
     public boolean isValid()
