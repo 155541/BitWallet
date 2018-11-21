@@ -21,6 +21,7 @@ public interface KContract {
             COLUMN_PARAMS + " BLOB NOT NULL," +
             COLUMN_DEADLINE + " INTEGER NOT NULL " +
             "CONTRAINT FK_K FOREIGN KEY (" + COLUMN_ACC_ID + ") REFERENCES " + 
-                AccountContract.TABLE + "(" + AccountContract.COLUMN_ID + "), " + 
+            AccountContract.TABLE + "(" + AccountContract.COLUMN_ID + ") " + 
+            "ON DELETE CASCADE ON UPDATE CASCADE, " + 
             "CONTRAINT U_K UNIQUE(" + COLUMN_ACC_ID + "))";
 }
