@@ -7,12 +7,12 @@ import javax.crypto.spec.GCMParameterSpec;
 public class K {
 
     private Long _id;
-    private Long accId;
+    private String accId;
     private String pwdBase64;
     private GCMParameterSpec spec;
     private Long deadline;
     
-    public K (@NonNull Long _id, @NonNull Long accId, @NonNull String pwdBase64,
+    public K (@NonNull Long _id, @NonNull String accId, @NonNull String pwdBase64,
               @NonNull GCMParameterSpec spec, @NonNull Long deadline) {
         
         this._id = _id;
@@ -32,11 +32,11 @@ public class K {
         this._id = _id;
     }
 
-    public Long getAccId() {
+    public String getAccId() {
         return accId;
     }
 
-    public void setAccId(Long accId) {
+    public void setAccId(String accId) {
         this.accId = accId;
     }
 

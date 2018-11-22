@@ -62,6 +62,7 @@ public final class Cryptography {
 
             String pwd64 = AppUtils.toStringBase64(bytes);
             K _k = new K();
+            _k.setAccId(alias);
             _k.setPwdBase64(pwd64);
             _k.setSpec(spec);
 

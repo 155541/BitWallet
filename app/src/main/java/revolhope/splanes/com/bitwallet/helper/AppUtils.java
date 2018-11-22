@@ -3,16 +3,44 @@ package revolhope.splanes.com.bitwallet.helper;
 import android.support.annotation.NonNull;
 import android.util.Base64;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public final class AppUtils {
 
 
+// =================================================================================================
+//                                          DATE UTILS
+// =================================================================================================
+
     public static String format(String format, long time)
     {
         return new SimpleDateFormat(format, Locale.ENGLISH).format(time);
     }
+
+    public static long timestamp() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+    @Nullable
+    public static Long toMillis(String format, String date) {
+
+        try {
+            return new SimpleDateFormat(format, Locale.ENGLISH).parse(date).getTime();
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+// =================================================================================================
+//                                         STRING UTILS
+// =================================================================================================
 
     @NonNull
     public static String toString(@NonNull char[] array)
@@ -23,6 +51,10 @@ public final class AppUtils {
         }
         return sb.toString();
     }
+
+// =================================================================================================
+//                                         BASE64 UTILS
+// =================================================================================================
 
     public static byte[] toBase64(@NonNull byte[] bytes)
     {

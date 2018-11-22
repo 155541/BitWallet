@@ -13,11 +13,15 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.crypto.spec.GCMParameterSpec;
+
 import revolhope.splanes.com.bitwallet.db.contracts.AccountContract;
 import revolhope.splanes.com.bitwallet.db.contracts.DirectoryContract;
 import revolhope.splanes.com.bitwallet.db.contracts.KContract;
+import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
+import revolhope.splanes.com.bitwallet.model.K;
 
 public class AppDatabase extends SQLiteOpenHelper {
 
@@ -773,7 +777,349 @@ public class AppDatabase extends SQLiteOpenHelper {
 //                                            K
 // ===============================================================================================//
 
-// ===============================================================================================//
-//                                       ACCOUNT - K
-// ===============================================================================================//
+    /**
+     * Method to retrieve K's from database
+     * @param id String identifier of the k to select, if it is null, then all k's
+     *          will be selected
+     * @param selectCallback Callback of the method
+     */
+    void selectK(@Nullable String id, @NonNull DaoCallbacks.Select<K> selectCallback)
+    {
+        new SelectKAsyncTask(getWritableDatabase(), id, selectCallback).execute();
+    }
+
+    /**
+     * Method to retrieve K's from database
+     * @param id Long identifier of the k to select, if it is null, then all k's
+     *          will be selected
+     * @param selectCallback Callback of the method
+     */
+    void selectKById(@Nullable Long id, @NonNull DaoCallbacks.Select<K> selectCallback)
+    {
+        new SelectKByIdAsyncTask(getWritableDatabase(), id, selectCallback).execute();
+    }
+
+    /**
+     * Method to insert new k to database
+     * @param insertCallback Callback of the method
+     * @param ks K array containing all k to insert
+     */
+    void insertK(@NonNull DaoCallbacks.Update<K> insertCallback,
+                       K... ks)
+    {
+        new InsertKAsyncTask(getWritableDatabase(), insertCallback, ks).execute();
+    }
+
+    /**
+     * Method to update k from the database
+     * @param updateCallback Callback of the method
+     * @param ks K array containing all k to be updated
+     */
+    void updateK(DaoCallbacks.Update<K> updateCallback, K... ks)
+    {
+        new UpdateKAsyncTask(getWritableDatabase(), updateCallback, ks).execute();
+    }
+
+    /**
+     * Method to delete k from database
+     * @param deleteCallback Callback of the method
+     * @param ids Long array containing all the id's from the k to be removed
+     */
+    void deleteK(DaoCallbacks.Delete deleteCallback, Long... ids)
+    {
+        new DeleteKAsyncTask(getWritableDatabase(), deleteCallback, ids).execute();
+    }
+
+
+    // ======================================================================== //
+    //                             K : ASYNC TASKS
+    // ======================================================================== //
+
+    private static class SelectKAsyncTask extends AsyncTask<Void,Void ,Void>
+    {
+        private SQLiteDatabase db;
+        private String id;
+        private DaoCallbacks.Select<K> callback;
+
+        private SelectKAsyncTask(@NonNull SQLiteDatabase db,
+                                   @Nullable String id,
+                                   @NonNull DaoCallbacks.Select<K> callback) {
+
+            this.db = db;
+            this.id = id;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                try(Cursor c = db.query(
+                        KContract.TABLE,
+                        KContract.COLUMNS,
+                        id == null ? null : KContract.COLUMN_ACC_ID + " = ?",
+                        id == null ? null : new String[]{id},
+                        null,
+                        null,
+                        null))
+                {
+                    if (c != null && c.moveToFirst())
+                    {
+                        List<K> list = new ArrayList<>();
+                        Long _id;
+                        String accId;
+                        byte[] cryptoPwd;
+                        byte[] iv;
+                        int tLength;
+                        Long deadline;
+                        do {
+
+                            _id = c.getLong(c.getColumnIndex(KContract.COLUMN_ID));
+                            accId = c.getString(c.getColumnIndex(KContract.COLUMN_ACC_ID));
+                            cryptoPwd = c.getBlob(c.getColumnIndex(KContract.COLUMN_CRYPTO_PWD));
+                            iv = c.getBlob(c.getColumnIndex(KContract.COLUMN_PARAM_IV));
+                            tLength = c.getInt(c.getColumnIndex(KContract.COLUMN_PARAM_TLENGTH));
+                            deadline = c.getLong(c.getColumnIndex(KContract.COLUMN_DEADLINE));
+
+
+                            list.add(new K(_id, accId, AppUtils.toStringBase64(cryptoPwd),
+                                     new GCMParameterSpec(tLength, iv), deadline));
+
+                        } while(c.moveToNext());
+
+                        callback.onSelected(list.toArray(new K[0]));
+                    }
+                    else
+                    {
+                        callback.onSelected(new K[0]);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    private static class SelectKByIdAsyncTask extends AsyncTask<Void,Void ,Void>
+    {
+        private SQLiteDatabase db;
+        private Long id;
+        private DaoCallbacks.Select<K> callback;
+
+        private SelectKByIdAsyncTask(@NonNull SQLiteDatabase db,
+                                 @Nullable Long id,
+                                 @NonNull DaoCallbacks.Select<K> callback) {
+
+            this.db = db;
+            this.id = id;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                try(Cursor c = db.query(
+                        KContract.TABLE,
+                        KContract.COLUMNS,
+                        id == null ? null : KContract.COLUMN_ID + " = ?",
+                        id == null ? null : new String[]{id.toString()},
+                        null,
+                        null,
+                        null))
+                {
+                    if (c != null && c.moveToFirst())
+                    {
+                        List<K> list = new ArrayList<>();
+                        Long _id;
+                        String accId;
+                        byte[] cryptoPwd;
+                        byte[] iv;
+                        int tLength;
+                        Long deadline;
+                        do {
+
+                            _id = c.getLong(c.getColumnIndex(KContract.COLUMN_ID));
+                            accId = c.getString(c.getColumnIndex(KContract.COLUMN_ACC_ID));
+                            cryptoPwd = c.getBlob(c.getColumnIndex(KContract.COLUMN_CRYPTO_PWD));
+                            iv = c.getBlob(c.getColumnIndex(KContract.COLUMN_PARAM_IV));
+                            tLength = c.getInt(c.getColumnIndex(KContract.COLUMN_PARAM_TLENGTH));
+                            deadline = c.getLong(c.getColumnIndex(KContract.COLUMN_DEADLINE));
+
+
+                            list.add(new K(_id, accId, AppUtils.toStringBase64(cryptoPwd),
+                                    new GCMParameterSpec(tLength, iv), deadline));
+
+                        } while(c.moveToNext());
+
+                        callback.onSelected(list.toArray(new K[0]));
+                    }
+                    else
+                    {
+                        callback.onSelected(new K[0]);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    private static class InsertKAsyncTask extends AsyncTask<Void, Void, Void>
+    {
+        private SQLiteDatabase db;
+        private K[] ks;
+        private DaoCallbacks.Update<K> callback;
+
+        private InsertKAsyncTask(SQLiteDatabase db, DaoCallbacks.Update<K> callback,
+                                   K... ks)
+        {
+            this.db = db;
+            this.ks = ks;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                ContentValues values = new ContentValues();
+                List<K> result = new ArrayList<>();
+
+                for (K k : ks)
+                {
+                    values.clear();
+                    values.put(KContract.COLUMN_ACC_ID, k.getAccId());
+                    values.put(KContract.COLUMN_CRYPTO_PWD, AppUtils.fromStringBase64(k.getPwdBase64()));
+                    values.put(KContract.COLUMN_PARAM_IV, k.getSpec().getIV());
+                    values.put(KContract.COLUMN_PARAM_TLENGTH, k.getSpec().getTLen());
+                    values.put(KContract.COLUMN_DEADLINE, k.getDeadline());
+
+
+                    long id = db.insert(KContract.TABLE, null, values);
+                    if (id != -1)
+                    {
+                        k.set_id(id);
+                        result.add(k);
+                    }
+                }
+                callback.onUpdated(result.toArray(new K[0]));
+            }
+            return null;
+        }
+    }
+
+    private static class UpdateKAsyncTask extends AsyncTask<Void, Void, Void>
+    {
+        private SQLiteDatabase db;
+        private DaoCallbacks.Update<K> callback;
+        private K[] ks;
+
+        private UpdateKAsyncTask(SQLiteDatabase db, DaoCallbacks.Update<K> updateCallback,
+                                   K... ks) {
+            this.db = db;
+            this.callback = updateCallback;
+            this.ks = ks;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                ContentValues values = new ContentValues();
+                List<K> result = new ArrayList<>();
+
+                for (K k : ks)
+                {
+                    values.clear();
+                    values.put(KContract.COLUMN_ID, k.get_id());
+                    values.put(KContract.COLUMN_ACC_ID, k.getAccId());
+                    values.put(KContract.COLUMN_CRYPTO_PWD, AppUtils.fromStringBase64(k.getPwdBase64()));
+                    values.put(KContract.COLUMN_PARAM_IV, k.getSpec().getIV());
+                    values.put(KContract.COLUMN_PARAM_TLENGTH, k.getSpec().getTLen());
+                    values.put(KContract.COLUMN_DEADLINE, k.getDeadline());
+
+
+                    long id = db.update(KContract.TABLE, values,
+                                        KContract.COLUMN_ID + " = ?",
+                                         new String[]{ k.get_id().toString() });
+                    if (id != -1)
+                    {
+                        result.add(k);
+                    }
+                }
+                callback.onUpdated(result.toArray(new K[0]));
+            }
+            return null;
+        }
+    }
+
+    private static class DeleteKAsyncTask extends AsyncTask<Void, Void, Void>
+    {
+        private SQLiteDatabase db;
+        private DaoCallbacks.Delete callback;
+        private Long[] ids;
+
+        private DeleteKAsyncTask(SQLiteDatabase db, DaoCallbacks.Delete callback, Long... ids) {
+
+            this.db = db;
+            this.callback = callback;
+            this.ids = ids;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("");
+            }
+            else
+            {
+                int count = 0;
+                for (long id : ids)
+                {
+                    int affected = db.delete(KContract.TABLE,
+                            KContract.COLUMN_ID + " = ?",
+                            new String[]{ String.valueOf(id)} );
+                    if (affected == 1)
+                    {
+                        count++;
+                    }
+                }
+                if (count == ids.length)
+                {
+                    callback.onDelete(DaoCallbacks.DELETE_OK);
+                }
+                else if (count != 0)
+                {
+                    callback.onDelete(DaoCallbacks.DELETE_PARTIAL);
+                }
+                else
+                {
+                    callback.onDelete(DaoCallbacks.DELETE_FAIL);
+                }
+            }
+            return null;
+        }
+    }
+
 }
