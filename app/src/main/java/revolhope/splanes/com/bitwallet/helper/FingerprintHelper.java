@@ -97,7 +97,7 @@ public abstract class FingerprintHelper {
             {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 if (vibrator != null) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(500,
+                    vibrator.vibrate(VibrationEffect.createOneShot(200,
                             VibrationEffect.DEFAULT_AMPLITUDE));
                 }
 

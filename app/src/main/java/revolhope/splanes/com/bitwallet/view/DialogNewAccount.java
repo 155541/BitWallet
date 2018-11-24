@@ -1,11 +1,15 @@
 package revolhope.splanes.com.bitwallet.view;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -20,46 +24,44 @@ import revolhope.splanes.com.bitwallet.db.DaoAccount;
 import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
 import revolhope.splanes.com.bitwallet.db.DaoK;
 import revolhope.splanes.com.bitwallet.helper.AppUtils;
-import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
+import revolhope.splanes.com.bitwallet.helper.DialogHelper;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.K;
 
-public class CreateNewActivity extends AppCompatActivity {
+public class DialogNewAccount extends DialogFragment {
 
     private EditText editText_Account;
     private EditText editText_Password;
 
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
-        final Account account = new Account();
+        View view = inflater.inflate(R.layout.activity_create, container, false);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_close_dialogfullscreen);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
-                finish();
+                getDialog().cancel();
             }
         });
         toolbar.setTitle("New Account");
 
-        editText_Account = findViewById(R.id.editText_Account);
-        editText_Password = findViewById(R.id.editText_Password);
-        final EditText editText_URL = findViewById(R.id.editText_URL);
-        final EditText editText_User = findViewById(R.id.editText_User);
-        Button btGenerate = findViewById(R.id.btGenerate);
-        final CheckBox checkBox_Expire = findViewById(R.id.checkBox_Expire);
-        final TextView textView_ExpireDate = findViewById(R.id.textView_ExpireDate);
-        final EditText editText_Brief = findViewById(R.id.editText_Brief);
-        Button btCreate = findViewById(R.id.btCreate);
+        final Account account = new Account();
 
-        TextView textView_Id = findViewById(R.id.textView_Id);
+        editText_Account = view.findViewById(R.id.editText_Account);
+        editText_Password = view.findViewById(R.id.editText_Password);
+        final EditText editText_URL = view.findViewById(R.id.editText_URL);
+        final EditText editText_User = view.findViewById(R.id.editText_User);
+        Button btGenerate = view.findViewById(R.id.btGenerate);
+        final CheckBox checkBox_Expire = view.findViewById(R.id.checkBox_Expire);
+        final TextView textView_ExpireDate = view.findViewById(R.id.textView_ExpireDate);
+        final EditText editText_Brief = view.findViewById(R.id.editText_Brief);
+        Button btCreate = view.findViewById(R.id.btCreate);
+
+        TextView textView_Id = view.findViewById(R.id.textView_Id);
         textView_Id.setText(account.get_id());
 
         btCreate.setOnClickListener(new View.OnClickListener() {
@@ -100,29 +102,33 @@ public class CreateNewActivity extends AppCompatActivity {
             }
         });
 
-        btGenerate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        return view;
+    }
 
-                DialogGenerateParams dialogGenerateParams = new DialogGenerateParams();
-                dialogGenerateParams.setCallback(new DialogGenerateParams.DialogCallback() {
-                    @Override
-                    public void getResult(int mode, int size) {
-                        String pwd = RandomGenerator.create(mode, size);
-                        editText_Password.setText(pwd != null ? pwd : "Oops..Try again");
-                    }
-                });
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(width, height);
             }
-        });
-
+        }
     }
 
     private void insertAccount(Account account, String pwd) {
 
-        DaoAccount daoAccount = DaoAccount.getInstance(getApplicationContext());
-        DaoK daoK = DaoK.getInstance(getApplicationContext());
         try {
-
+            DaoAccount daoAccount = DaoAccount.getInstance(getContext());
+            DaoK daoK = DaoK.getInstance(getContext());
             Cryptography crypto = new Cryptography();
             crypto.newKey(account.get_id());
             K k = crypto.encrypt(pwd.getBytes(Charset.forName("UTF-8")), account.get_id());
@@ -133,22 +139,31 @@ public class CreateNewActivity extends AppCompatActivity {
                 k.setDeadline(cal.getTimeInMillis());
 
                 daoAccount.insert(new DaoCallbacks.Update<Account>() {
-                    @Override
-                    public void onUpdated(Account[] results) {}
-                },
-                                  new Account[]{account});
+                                      @Override
+                                      public void onUpdated(Account[] results) {}
+                                  },
+                        new Account[]{account});
 
                 daoK.insert(new DaoCallbacks.Update<K>() {
-                    @Override
-                    public void onUpdated(K[] results) { }
-                },
-                            new K[]{k});
+                                @Override
+                                public void onUpdated(K[] results) { }
+                            },
+                        new K[]{k});
 
             }
             else {
-                // TODO: Throw dialog: error while encryption
+                if (getContext() != null)
+                    DialogHelper.showInfo("Error",
+                                          "Error while decryption.." ,
+                                           getContext());
+                else {
+                    System.err.println(" :......: Encryption error: DialogNewAccount class," +
+                                       " line: 152");
+                }
             }
         } catch (Exception e) {
+            if (getContext() != null)
+                DialogHelper.showInfo("Exception", e.getMessage(), getContext());
             e.printStackTrace();
         }
 
@@ -157,6 +172,6 @@ public class CreateNewActivity extends AppCompatActivity {
     private boolean checkInputs() {
 
         return !editText_Account.getText().toString().isEmpty() &&
-               !editText_Password.getText().toString().isEmpty();
+                !editText_Password.getText().toString().isEmpty();
     }
 }

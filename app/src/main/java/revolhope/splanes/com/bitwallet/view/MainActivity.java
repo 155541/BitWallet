@@ -47,9 +47,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getApplicationContext(), CreateNewActivity.class);
-                startActivity(i);
-                finish();
+                DialogNewAccount dialog = new DialogNewAccount();
+                dialog.show(getSupportFragmentManager(), "New");
             }
         });
 

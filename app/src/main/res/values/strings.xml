@@ -21,4 +21,15 @@
     <string name="hint_optional_recommended">Optional, recommended</string>
     <string name="bt_change_pattern"><![CDATA[Change pattern >]]></string>
     <string name="prompt_set_pattern_or_fingerprint">Set pattern or fingerprint</string>
+    <string name="prompt_complexity">Complexity</string>
+    <string name="prompt_length">Length</string>
+    <string name="prompt_simple_characters_amp_numbers"><![CDATA[Simple (Characters & numbers)]]></string>
+    <string name="prompt_complex_symbols_included">Complex (Symbols included)</string>
+    <string name="prompt__8_characters">8 Characters</string>
+    <string name="prompt__16_characters">16 Characters</string>
+    <string name="prompt__24_characters">24 Characters</string>
+    <string name="prompt__32_characters">32 Characters</string>
+    <string name="prompt__64_characters">64 Characters</string>
+    <string name="prompt_other_size">Other size</string>
+    <string name="prompt_specify_length">Specify length</string>
 </resources>

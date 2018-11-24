@@ -1,4 +1,16 @@
+package revolhope.splanes.com.bitwallet.helper;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import revolhope.splanes.com.bitwallet.R;
 
 public class DialogHelper {
    
@@ -13,7 +25,7 @@ public class DialogHelper {
         builder.setMessage(message);
     }
     
-    public void setPossitiveButton(@NonNull String positiveButton,
+    public void setPositiveButton(@NonNull String positiveButton,
                                    @NonNull DialogInterface.OnClickListener listener) {
         builder.setPositiveButton(positiveButton, listener);
     }
@@ -31,7 +43,7 @@ public class DialogHelper {
     public void setIcon(int drawableRes) {
         builder.setIcon(drawableRes);
     }
-        
+
     public void setView(View view) {
         builder.setView(view);
     }
@@ -44,12 +56,16 @@ public class DialogHelper {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    
+
+
     public static void showInfo(@NonNull String title, @NonNull String message, @NonNull Context context) {
         DialogHelper help = new DialogHelper(context);
         help.setStrings(title, message);
-        help.setPossitiveButton("Ok", new  DialogInterface.OnClickListener {
-            public void onClick(DialogInterface dialog, int id) {}
+        help.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
         });
         help.setIcon(R.drawable.ic_dialog_info);
         help.show();
