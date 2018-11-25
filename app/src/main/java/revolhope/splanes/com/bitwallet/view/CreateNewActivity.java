@@ -29,7 +29,6 @@ public class CreateNewActivity extends AppCompatActivity {
     private EditText editText_Account;
     private EditText editText_Password;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +111,7 @@ public class CreateNewActivity extends AppCompatActivity {
                         editText_Password.setText(pwd != null ? pwd : "Oops..Try again");
                     }
                 });
+                dialogGenerateParams.show(getSupportFragmentManager(), "GenDialog");
             }
         });
 

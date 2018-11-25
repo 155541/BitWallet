@@ -1,7 +1,9 @@
 package revolhope.splanes.com.bitwallet.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +19,6 @@ import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 
 public class DialogGenerateParams extends DialogFragment {
 
-
     private EditText editText_sizeOther;
     private DialogCallback callback;
     private int mode;
@@ -27,39 +28,46 @@ public class DialogGenerateParams extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Set password params");
-        builder.setPositiveButton("Generate", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        if (getContext() != null) {
+            Activity activity = (Activity) getContext();
+            ViewGroup viewGroup = activity.findViewById(android.R.id.content);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_generate_params,
+                                                             viewGroup, false);
+            bindComponents(view);
 
-                if (size != RandomGenerator.SIZE_8 && size != RandomGenerator.SIZE_16 &&
-                    size != RandomGenerator.SIZE_24 && size != RandomGenerator.SIZE_32 &&
-                    size != RandomGenerator.SIZE_64) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Set password params");
+            builder.setView(view);
+            builder.setPositiveButton("Generate", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-                    String str = editText_sizeOther.getText().toString();
+                    if (size != RandomGenerator.SIZE_8 && size != RandomGenerator.SIZE_16 &&
+                            size != RandomGenerator.SIZE_24 && size != RandomGenerator.SIZE_32 &&
+                            size != RandomGenerator.SIZE_64) {
 
-                    try { size = Integer.parseInt(str); }
-                    catch (NumberFormatException e) { size = -1; }
+                        String str = editText_sizeOther.getText().toString();
+
+                        try { size = Integer.parseInt(str); }
+                        catch (NumberFormatException e) { size = -1; }
+                    }
+                    if (callback != null) callback.getResult(mode, size);
+
                 }
-                if (callback != null) callback.getResult(mode, size);
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) { }
+            });
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        });
+            return builder.create();
 
-        return builder.create();
+        }
+        else return super.onCreateDialog(savedInstanceState);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public void bindComponents(@NonNull View view) {
 
-        View view = inflater.inflate(R.layout.dialog_generate_params, container, false);
 
         RadioButton rb_simple = view.findViewById(R.id.radioButton_simple);
         RadioButton rb_complex = view.findViewById(R.id.radioButton_complex);
@@ -129,8 +137,6 @@ public class DialogGenerateParams extends DialogFragment {
         rb_size32.setOnClickListener(listenerSize);
         rb_size64.setOnClickListener(listenerSize);
         rb_sizeOther.setOnClickListener(listenerSize);
-
-        return view;
     }
 
     public void setCallback(DialogCallback callback) {

@@ -30,12 +30,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -46,22 +40,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabNew).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                DialogNewAccount dialog = new DialogNewAccount();
-                dialog.show(getSupportFragmentManager(), "New");
+                Intent i = new Intent(getApplicationContext(), CreateNewActivity.class);
+                startActivity(i);
+                finish();
             }
         });
-
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    @Override
-    protected void onPause()
-    {
-        goAuth();
-        super.onPause();
     }
 
     @Override

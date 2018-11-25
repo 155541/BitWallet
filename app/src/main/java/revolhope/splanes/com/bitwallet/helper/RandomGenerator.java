@@ -40,7 +40,7 @@ public abstract class RandomGenerator {
         int universeSize = u.length();
 
         for (int i = 0 ; i < s ; i++) {
-            double index = Math.floor(Math.random() * universeSize) + 1;
+            double index = Math.floor(Math.random() * (universeSize-1)) + 1;
             sb.append(u.charAt((int)index));
         }
 
