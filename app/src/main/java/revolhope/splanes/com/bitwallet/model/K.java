@@ -2,9 +2,11 @@ package revolhope.splanes.com.bitwallet.model;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 import javax.crypto.spec.GCMParameterSpec;
 
-public class K {
+public class K implements Serializable {
 
     private Long _id;
     private String accId;

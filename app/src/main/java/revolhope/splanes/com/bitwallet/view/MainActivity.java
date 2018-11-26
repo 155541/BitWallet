@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabNew).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), CreateNewActivity.class);
+                Intent i = new Intent(getApplicationContext(), AccountActivity.class);
                 i.putExtra(AppContract.EXTRA_CURRENT_DIR, mainFragment.getCurrentDir());
                 startActivity(i);
                 finish();

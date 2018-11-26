@@ -24,7 +24,7 @@
             app:title="@string/activity_create_title">
 
             <Button
-                android:id="@+id/btCreate"
+                android:id="@+id/btDone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
