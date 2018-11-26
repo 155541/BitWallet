@@ -111,6 +111,16 @@ public class AppDatabase extends SQLiteOpenHelper {
     }
 
     /**
+     * Method to retrieve all directories from database located at parent 'id'
+     * @param selectCallback Callback of the method
+     */
+    void selectDirectoryAt(@NonNull Long id, @NonNull DaoCallbacks.Select<Directory> selectCallback)
+    {
+        new SelectDirAtAsyncTask(getWritableDatabase(), id, selectCallback).execute();
+    }
+
+
+    /**
      * Method to insert new Directories to database
      * @param insertCallback Callback of the method
      * @param directories Directory array containing all directories to insert
@@ -314,6 +324,62 @@ public class AppDatabase extends SQLiteOpenHelper {
         }
     }
 
+    private static class SelectDirAtAsyncTask extends AsyncTask<Void,Void ,Void>
+    {
+        private SQLiteDatabase db;
+        private Long id;
+        private DaoCallbacks.Select<Directory> callback;
+
+        private SelectDirAtAsyncTask(@NonNull SQLiteDatabase db,
+                                       @NonNull Long id,
+                                       @NonNull DaoCallbacks.Select<Directory> callback) {
+
+            this.db = db;
+            this.id = id;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                try(Cursor c = db.query(
+                        DirectoryContract.TABLE,
+                        DirectoryContract.COLUMNS,
+                        DirectoryContract.COLUMN_PARENT + " = ?",
+                        new String[]{id.toString()},
+                        null,
+                        null,
+                        null))
+                {
+                    if (c != null && c.moveToFirst())
+                    {
+                        List<Directory> list = new ArrayList<>();
+                        do {
+
+                            Long _id = c.getLong(c.getColumnIndex(DirectoryContract.COLUMN_ID));
+                            String name = c.getString(c.getColumnIndex(DirectoryContract.COLUMN_NAME));
+                            Long parent = c.getLong(c.getColumnIndex(DirectoryContract.COLUMN_PARENT));
+                            list.add(new Directory(_id, name, parent));
+
+                        } while(c.moveToNext());
+
+                        callback.onSelected(list.toArray(new Directory[0]));
+                    }
+                    else
+                    {
+                        callback.onSelected(new Directory[0]);
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
     private static class InsertDirAsyncTask extends AsyncTask<Void, Void, Void>
     {
@@ -464,13 +530,23 @@ public class AppDatabase extends SQLiteOpenHelper {
 
     /**
      * Method to retrieve accounts from database
-     * @param id Long identifier of the accounts to select, if it is null, then all accounts
+     * @param id String identifier of the accounts to select, if it is null, then all accounts
      *          will be selected
      * @param selectCallback Callback of the method
      */
     void selectAccount(@Nullable String id, @NonNull DaoCallbacks.Select<Account> selectCallback)
     {
         new SelectAccAsyncTask(getWritableDatabase(), id, selectCallback).execute();
+    }
+
+    /**
+     * Method to retrieve accounts from database located at id directory
+     * @param id Long parent identifier of the accounts to select
+     * @param selectCallback Callback of the method
+     */
+    void selectAccountAt(@Nullable Long id, @NonNull DaoCallbacks.Select<Account> selectCallback)
+    {
+        new SelectAccAtAsyncTask(getWritableDatabase(), id, selectCallback).execute();
     }
 
     /**
@@ -586,6 +662,90 @@ public class AppDatabase extends SQLiteOpenHelper {
                                                  update,
                                                  date_expire,
                                                  parent));
+
+                        } while(c.moveToNext());
+
+                        callback.onSelected(list.toArray(new Account[0]));
+                    }
+                    else
+                    {
+                        callback.onSelected(new Account[0]);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    private static class SelectAccAtAsyncTask extends AsyncTask<Void,Void ,Void>
+    {
+        private SQLiteDatabase db;
+        private Long id;
+        private DaoCallbacks.Select<Account> callback;
+
+        private SelectAccAtAsyncTask(@NonNull SQLiteDatabase db,
+                                   @Nullable Long id,
+                                   @NonNull DaoCallbacks.Select<Account> callback) {
+
+            this.db = db;
+            this.id = id;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                try(Cursor c = db.query(
+                        AccountContract.TABLE,
+                        AccountContract.COLUMNS,
+                        AccountContract.COLUMN_PARENT + " = ?",
+                         new String[]{id.toString()},
+                        null,
+                        null,
+                        null))
+                {
+                    if (c != null && c.moveToFirst())
+                    {
+                        List<Account> list = new ArrayList<>();
+                        String _id;
+                        String account;
+                        String user;
+                        String url;
+                        String brief;
+                        Long create;
+                        Long update;
+                        boolean expire;
+                        Long date_expire;
+                        Long parent;
+                        do {
+
+                            _id = c.getString(c.getColumnIndex(AccountContract.COLUMN_ID));
+                            account = c.getString(c.getColumnIndex(AccountContract.COLUMN_ACCOUNT));
+                            user = c.getString(c.getColumnIndex(AccountContract.COLUMN_USER));
+                            url = c.getString(c.getColumnIndex(AccountContract.COLUMN_URL));
+                            brief = c.getString(c.getColumnIndex(AccountContract.COLUMN_BRIEF));
+                            create = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_CREATE));
+                            update = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_UPDATE));
+                            expire = c.getInt(c.getColumnIndex(AccountContract.COLUMN_EXPIRE)) == 1;
+                            date_expire = c.getLong(c.getColumnIndex(AccountContract.COLUMN_DATE_EXPIRE));
+                            parent = c.getLong(c.getColumnIndex(AccountContract.COLUMN_PARENT));
+
+                            list.add(new Account(_id,
+                                    account,
+                                    user,
+                                    url,
+                                    brief,
+                                    expire,
+                                    create,
+                                    update,
+                                    date_expire,
+                                    parent));
 
                         } while(c.moveToNext());
 

@@ -6,16 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import revolhope.splanes.com.bitwallet.R;
 import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
+import revolhope.splanes.com.bitwallet.view.MainFragment;
 
 public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContentAdapter.Holder> {
 
@@ -24,6 +24,9 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
     private List<Account> accounts;
     private List<Directory> directories;
+
+    private MainFragment.OnAccClick onClickAcc;
+    private MainFragment.OnDirClick onClickDir;
 
     private Context context;
 
@@ -153,7 +156,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         holder.textView_Name.setText(account.getAccount());
         holder.textView_Create.setText(String.format("Create on: %s",
                 AppUtils.format("dd/MM/yyyy",account.getDateCreate())));
-        if (account.getDateUpdate() != null)
+        if (account.getDateUpdate() != null && account.getDateUpdate() != 0)
         {
             holder.textView_Update.setText(String.format("Updated on: %s",
                     AppUtils.format("dd/MM/yyyy", account.getDateUpdate())));
@@ -170,8 +173,15 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         holder.textView_Name.setText(d.getName());
     }
 
+    public void setOnClickAcc(MainFragment.OnAccClick onClickAcc) {
+        this.onClickAcc = onClickAcc;
+    }
+    public void setOnClickDir(MainFragment.OnDirClick onClickDir) {
+        this.onClickDir = onClickDir;
+    }
+
 // ============================================================================================== //
-//                                          INNER CLASSES                                             //
+//                                          INNER CLASSES                                         //
 // ============================================================================================== //
 
     abstract class Holder extends RecyclerView.ViewHolder
@@ -181,7 +191,6 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
     class HolderAccount extends Holder
     {
-        private ImageView ivLogo;
         private TextView textView_Name;
         private TextView textView_Create;
         private TextView textView_Update;
@@ -190,8 +199,6 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         HolderAccount (View view)
         {
             super(view);
-
-            ivLogo = view.findViewById(R.id.ivLogo);
             textView_Name = view.findViewById(R.id.textView_Name);
             textView_Create = view.findViewById(R.id.textView_createOn);
             textView_Update = view.findViewById(R.id.textView_updateOn);
@@ -201,6 +208,15 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
                 @Override
                 public void onClick(View view) {
 
+                    int pos = directories == null || directories.isEmpty() ?
+                              getAdapterPosition() : getAdapterPosition() - directories.size();
+                    if (pos >= 0 && accounts != null && accounts.size() > pos) {
+                        onClickAcc.onClick(accounts.get(pos));
+                    }
+                    else {
+                        Toast.makeText(context, "Error to get the account clicked...",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -216,19 +232,24 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
     class HolderDir extends Holder
     {
-        private ImageView ivLogo;
         private TextView textView_Name;
 
         HolderDir (View view)
         {
             super(view);
-            ivLogo = view.findViewById(R.id.ivLogo);
             textView_Name = view.findViewById(R.id.textView_Name);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
+                    if (directories != null && directories.size() > getAdapterPosition()) {
+                        onClickDir.onClick(directories.get(getAdapterPosition()));
+                    }
+                    else {
+                        Toast.makeText(context, "Error to get the directory clicked...",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -238,7 +259,6 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
                     return false;
                 }
             });
-
         }
     }
 }

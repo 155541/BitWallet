@@ -49,14 +49,22 @@ public class DaoDirectory implements AbstractDao<Long, Directory> {
         appDatabase.selectDirectoryInRoot(selectCallback);
     }
 
+    public void findChildrenAt(@NonNull Long idParent,
+                               @NonNull DaoCallbacks.Select<Directory> selectCallback)
+            throws SQLException{
+        appDatabase.selectDirectoryAt(idParent, selectCallback);
+    }
+
     @Override
-    public void insert(@NonNull DaoCallbacks.Update<Directory> updateCallback, @NonNull Directory... entities)
+    public void insert(@NonNull DaoCallbacks.Update<Directory> updateCallback,
+                       @NonNull Directory... entities)
             throws SQLException {
         appDatabase.insertDirectory(updateCallback, entities);
     }
 
     @Override
-    public void update(@NonNull DaoCallbacks.Update<Directory> updateCallback, @NonNull Directory... entities)
+    public void update(@NonNull DaoCallbacks.Update<Directory> updateCallback,
+                       @NonNull Directory... entities)
             throws SQLException {
         appDatabase.updateDirectory(updateCallback, entities);
     }

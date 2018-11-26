@@ -37,7 +37,14 @@ public class DaoAccount implements AbstractDao<String, Account> {
         appDatabase.selectAccount(null, selectCallback);
     }
 
-    public void findInRoot(@NonNull DaoCallbacks.Select<Account> selectCallback) throws SQLException {
+    public void findAllAt(@NonNull Long parentId,
+                          @NonNull DaoCallbacks.Select<Account> selectCallback)
+            throws SQLException {
+        appDatabase.selectAccountAt(parentId, selectCallback);
+    }
+
+    public void findInRoot(@NonNull DaoCallbacks.Select<Account> selectCallback)
+            throws SQLException {
         appDatabase.selectAccountRoot(selectCallback);
     }
 
