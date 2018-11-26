@@ -12,15 +12,16 @@
     <string name="prompt_url">URL:</string>
     <string name="prompt_user">User:</string>
     <string name="prompt_password">Password:</string>
-    <string name="prompt_button_generate">Generate</string>
+    <string name="prompt_button_generate">Auto generate</string>
     <string name="prompt_checkbox_expire">Expire</string>
     <string name="prompt_brief">Brief:</string>
     <string name="prompt_button_cancel">Cancel</string>
     <string name="hint_mandatory">Mandatory</string>
     <string name="hint_optional">Optional</string>
     <string name="hint_optional_recommended">Optional, recommended</string>
-    <string name="bt_change_pattern"><![CDATA[Change pattern >]]></string>
-    <string name="prompt_set_pattern_or_fingerprint">Set pattern or fingerprint</string>
+    <string name="prompt_set_pattern_or_fingerprint">
+        Welcome to BitWallet\n\nSet pattern or use fingerprint
+    </string>
     <string name="prompt_complexity">Complexity</string>
     <string name="prompt_length">Length</string>
     <string name="prompt_simple_characters_amp_numbers"><![CDATA[Simple (Characters & numbers)]]></string>
@@ -32,4 +33,5 @@
     <string name="prompt__64_characters">64 Characters</string>
     <string name="prompt_other_size">Other size</string>
     <string name="prompt_specify_length">Specify length</string>
+    <string name="hint_set_folder_name">Set folder name</string>
 </resources>

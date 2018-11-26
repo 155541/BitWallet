@@ -2,6 +2,7 @@ package revolhope.splanes.com.bitwallet.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +23,9 @@ import revolhope.splanes.com.bitwallet.model.Directory;
 
 public class MainFragment extends Fragment
 {
-
+    private Directory currentDir;
     private RecyclerContentAdapter contentAdapter;
+
     //RecyclerPathAdapter pathAdapter;
 
     @Override
@@ -41,11 +43,21 @@ public class MainFragment extends Fragment
                                                                   false));
 
         contentAdapter = new RecyclerContentAdapter(getContext());
+        recyclerViewContent.setAdapter(contentAdapter);
 
         DaoDirectory daoDirectory = DaoDirectory.getInstance(getContext());
         DaoAccount daoAccount = DaoAccount.getInstance(getContext());
         try
         {
+            daoDirectory.findRoot(new DaoCallbacks.Select<Directory>() {
+                @Override
+                public void onSelected(Directory[] selection) {
+                    if (selection != null && selection.length == 1) {
+                        currentDir = selection[0];
+                    }
+                }
+            });
+
             daoDirectory.findInRoot(new DaoCallbacks.Select<Directory>() {
                 @Override
                 public void onSelected(Directory[] selection) {
@@ -70,6 +82,13 @@ public class MainFragment extends Fragment
 
 
         return rootView;
+    }
+
+    @Nullable
+    public Long getCurrentDir() {
+
+        return this.currentDir != null ? currentDir.get_id() : null;
+
     }
 
 }

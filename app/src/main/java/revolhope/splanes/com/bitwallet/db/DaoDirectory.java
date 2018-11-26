@@ -39,9 +39,14 @@ public class DaoDirectory implements AbstractDao<Long, Directory> {
         appDatabase.selectDirectory(null, selectCallback);
     }
 
+    public void findRoot(@NonNull DaoCallbacks.Select<Directory> selectCallback)
+            throws SQLException{
+        appDatabase.selectDirectoryRoot(selectCallback);
+    }
+
     public void findInRoot(@NonNull DaoCallbacks.Select<Directory> selectCallback)
         throws SQLException{
-        appDatabase.selectDirectoryRoot(selectCallback);
+        appDatabase.selectDirectoryInRoot(selectCallback);
     }
 
     @Override

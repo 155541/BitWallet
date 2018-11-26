@@ -1,21 +1,26 @@
 package revolhope.splanes.com.bitwallet.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.sql.SQLException;
 
 import revolhope.splanes.com.bitwallet.R;
+import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
+import revolhope.splanes.com.bitwallet.db.DaoDirectory;
+import revolhope.splanes.com.bitwallet.helper.AppContract;
+import revolhope.splanes.com.bitwallet.helper.DialogHelper;
+import revolhope.splanes.com.bitwallet.model.Directory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,8 +46,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), CreateNewActivity.class);
+                i.putExtra(AppContract.EXTRA_CURRENT_DIR, mainFragment.getCurrentDir());
                 startActivity(i);
                 finish();
+            }
+        });
+
+        findViewById(R.id.fabFolder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogNewFolder dialogNewFolder = new DialogNewFolder();
+                dialogNewFolder.show(getSupportFragmentManager(), "DialogNewFolder");
             }
         });
     }
@@ -101,4 +115,35 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+
+    public void newFolder(String folderName) {
+
+        Long parent = mainFragment.getCurrentDir();
+        if (parent != null) {
+            try {
+                Directory directory = new Directory(folderName, parent);
+                DaoDirectory daoDirectory = DaoDirectory.getInstance(this);
+                daoDirectory.insert(new DaoCallbacks.Update<Directory>() {
+                    @Override
+                    public void onUpdated(Directory[] results) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                         "Directory created!", Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+                    }
+                }, directory);
+            }
+            catch (SQLException e) {
+                DialogHelper.showInfo("SQL Error", e.getMessage(), this);
+            }
+        }
+        else {
+            Toast.makeText(this, "Couldn't get parent folder...", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
 }

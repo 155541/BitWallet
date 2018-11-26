@@ -27,10 +27,13 @@
                 android:id="@+id/btCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                android:text="@string/activity_create_btCreate"/>
+                android:background="@android:color/transparent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="@string/activity_create_btCreate"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -59,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_id"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
@@ -69,9 +73,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="48dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_account"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/prompt_Id" />
 
@@ -80,9 +86,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="48dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_url"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/prompt_Account" />
 
@@ -91,9 +99,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="48dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_user"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/prompt_URL" />
 
@@ -102,17 +112,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_password"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prompt_Brief" />
+                app:layout_constraintTop_toBottomOf="@+id/editText_Brief" />
 
             <TextView
                 android:id="@+id/textView_Id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
+                android:fontFamily="sans-serif-condensed"
                 app:layout_constraintBottom_toBottomOf="@+id/prompt_Id"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/editText_Account"
@@ -126,6 +139,7 @@
                 android:layout_marginEnd="32dp"
                 android:autofillHints="account"
                 android:ems="10"
+                android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_mandatory"
                 android:importantForAutofill="auto"
                 android:inputType="textPersonName"
@@ -141,6 +155,7 @@
                 android:layout_marginEnd="32dp"
                 android:autofillHints="url"
                 android:ems="10"
+                android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_optional"
                 android:importantForAutofill="auto"
                 android:inputType="textUri"
@@ -156,6 +171,7 @@
                 android:layout_marginEnd="32dp"
                 android:autofillHints="user"
                 android:ems="10"
+                android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_optional_recommended"
                 android:importantForAutofill="auto"
                 android:inputType="textPersonName|textEmailAddress"
@@ -171,9 +187,10 @@
                 android:layout_marginEnd="32dp"
                 android:autofillHints="password"
                 android:ems="10"
+                android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_mandatory"
                 android:importantForAutofill="auto"
-                android:inputType="text"
+                android:inputType="textLongMessage|textMultiLine"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                 app:layout_constraintBottom_toBottomOf="@+id/prompt_Password"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -185,10 +202,13 @@
                 android:id="@+id/btGenerate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:background="@android:color/transparent"
+                android:elevation="4dp"
+                android:fontFamily="sans-serif-condensed-medium"
                 android:text="@string/prompt_button_generate"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editText_Password" />
 
@@ -197,6 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_checkbox_expire"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintBottom_toBottomOf="@+id/btGenerate"
@@ -209,6 +230,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-condensed"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/checkBox_Expire"
                 app:layout_constraintStart_toStartOf="@+id/checkBox_Expire"
@@ -219,9 +241,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/prompt_brief"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/prompt_User" />
 
@@ -232,6 +256,7 @@
                 android:layout_marginEnd="32dp"
                 android:autofillHints="description"
                 android:ems="10"
+                android:fontFamily="sans-serif-condensed"
                 android:gravity="start|top"
                 android:hint="@string/hint_optional"
                 android:importantForAutofill="auto"

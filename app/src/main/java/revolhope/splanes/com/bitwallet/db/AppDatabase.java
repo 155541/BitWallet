@@ -96,6 +96,15 @@ public class AppDatabase extends SQLiteOpenHelper {
      * Method to retrieve directories from database located at directory root
      * @param selectCallback Callback of the method
      */
+    void selectDirectoryInRoot(@NonNull DaoCallbacks.Select<Directory> selectCallback)
+    {
+        new SelectDirInRootAsyncTask(getWritableDatabase(), selectCallback).execute();
+    }
+
+    /**
+     * Method to retrieve root directory from database
+     * @param selectCallback Callback of the method
+     */
     void selectDirectoryRoot(@NonNull DaoCallbacks.Select<Directory> selectCallback)
     {
         new SelectDirRootAsyncTask(getWritableDatabase(), selectCallback).execute();
@@ -193,12 +202,12 @@ public class AppDatabase extends SQLiteOpenHelper {
         }
     }
 
-    private static class SelectDirRootAsyncTask extends AsyncTask<Void,Void ,Void>
+    private static class SelectDirInRootAsyncTask extends AsyncTask<Void,Void ,Void>
     {
         private SQLiteDatabase db;
         private DaoCallbacks.Select<Directory> callback;
 
-        private SelectDirRootAsyncTask(@NonNull SQLiteDatabase db,
+        private SelectDirInRootAsyncTask(@NonNull SQLiteDatabase db,
                                        @NonNull DaoCallbacks.Select<Directory> callback) {
 
             this.db = db;
@@ -249,6 +258,62 @@ public class AppDatabase extends SQLiteOpenHelper {
             return null;
         }
     }
+
+    private static class SelectDirRootAsyncTask extends AsyncTask<Void,Void ,Void>
+    {
+        private SQLiteDatabase db;
+        private DaoCallbacks.Select<Directory> callback;
+
+        private SelectDirRootAsyncTask(@NonNull SQLiteDatabase db,
+                                         @NonNull DaoCallbacks.Select<Directory> callback) {
+
+            this.db = db;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if (!db.isOpen())
+            {
+                throw new SQLException("Database instance is closed or is locked by other thread");
+            }
+            else
+            {
+                try(Cursor c = db.query(
+                        DirectoryContract.TABLE,
+                        DirectoryContract.COLUMNS,
+                        DirectoryContract.COLUMN_PARENT + " IS NULL AND " +
+                        DirectoryContract.COLUMN_NAME + " = ?",
+                        new String[]{"Root"},
+                        null,
+                        null,
+                        null))
+                {
+                    if (c != null && c.moveToFirst())
+                    {
+                        List<Directory> list = new ArrayList<>();
+                        do {
+
+                            Long _id = c.getLong(c.getColumnIndex(DirectoryContract.COLUMN_ID));
+                            String name = c.getString(c.getColumnIndex(DirectoryContract.COLUMN_NAME));
+                            Long parent = c.getLong(c.getColumnIndex(DirectoryContract.COLUMN_PARENT));
+                            list.add(new Directory(_id, name, parent));
+
+                        } while(c.moveToNext());
+
+                        callback.onSelected(list.toArray(new Directory[0]));
+                    }
+                    else
+                    {
+                        callback.onSelected(new Directory[0]);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
 
     private static class InsertDirAsyncTask extends AsyncTask<Void, Void, Void>
     {
@@ -660,7 +725,7 @@ public class AppDatabase extends SQLiteOpenHelper {
                     values.put(AccountContract.COLUMN_DATE_EXPIRE, acc.getDateExpire());
                     values.put(AccountContract.COLUMN_PARENT, acc.getParent());
 
-                    long id = db.insert(DirectoryContract.TABLE, null, values);
+                    long id = db.insert(AccountContract.TABLE, null, values);
                     if (id != -1)
                     {
                         result.add(acc);

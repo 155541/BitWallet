@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import revolhope.splanes.com.bitwallet.crypto.Cryptography;
 import revolhope.splanes.com.bitwallet.db.DaoAccount;
 import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
 import revolhope.splanes.com.bitwallet.db.DaoK;
+import revolhope.splanes.com.bitwallet.helper.AppContract;
 import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 import revolhope.splanes.com.bitwallet.model.Account;
@@ -28,6 +30,8 @@ public class CreateNewActivity extends AppCompatActivity {
 
     private EditText editText_Account;
     private EditText editText_Password;
+    private long parentId;
+    private int insertControl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +52,11 @@ public class CreateNewActivity extends AppCompatActivity {
         });
         toolbar.setTitle("New Account");
 
+        if (getIntent().getExtras() != null) {
+            parentId = getIntent().getExtras().getLong(AppContract.EXTRA_CURRENT_DIR);
+        }
+
+
         editText_Account = findViewById(R.id.editText_Account);
         editText_Password = findViewById(R.id.editText_Password);
         final EditText editText_URL = findViewById(R.id.editText_URL);
@@ -67,6 +76,7 @@ public class CreateNewActivity extends AppCompatActivity {
 
                 if (checkInputs()) {
 
+                    account.setParent(parentId);
                     account.setAccount(editText_Account.getText().toString());
                     account.setUser(editText_User.getText().toString());
                     account.setUrl(editText_URL.getText().toString());
@@ -132,17 +142,23 @@ public class CreateNewActivity extends AppCompatActivity {
                 cal.add(Calendar.MONTH, 3);
                 k.setDeadline(cal.getTimeInMillis());
 
+                insertControl = 0;
+
                 daoAccount.insert(new DaoCallbacks.Update<Account>() {
                     @Override
-                    public void onUpdated(Account[] results) {}
-                },
-                                  new Account[]{account});
+                    public void onUpdated(Account[] results) {
+                        if (results != null && results.length != 0) increaseControl();
+                    }
+                }, new Account[]{account});
 
                 daoK.insert(new DaoCallbacks.Update<K>() {
                     @Override
-                    public void onUpdated(K[] results) { }
-                },
-                            new K[]{k});
+                    public void onUpdated(K[] results) {
+                        if (results != null && results.length != 0) increaseControl();
+                    }
+                }, new K[]{k});
+
+
 
             }
             else {
@@ -152,6 +168,20 @@ public class CreateNewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void increaseControl() {
+        insertControl++;
+        if (insertControl == 2) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),
+                             "Account created!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        }
     }
 
     private boolean checkInputs() {

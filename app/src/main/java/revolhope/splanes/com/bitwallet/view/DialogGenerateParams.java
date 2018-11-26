@@ -3,17 +3,19 @@ package revolhope.splanes.com.bitwallet.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
 import revolhope.splanes.com.bitwallet.R;
 import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 
@@ -36,7 +38,12 @@ public class DialogGenerateParams extends DialogFragment {
             bindComponents(view);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Set password params");
+
+            Spannable span = new SpannableString("Set password params");
+            span.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),
+                        0, span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            builder.setTitle(span);
             builder.setView(view);
             builder.setPositiveButton("Generate", new DialogInterface.OnClickListener() {
                 @Override
@@ -78,6 +85,7 @@ public class DialogGenerateParams extends DialogFragment {
         RadioButton rb_size64 = view.findViewById(R.id.radioButton_size64);
         RadioButton rb_sizeOther = view.findViewById(R.id.radioButton_sizeOther);
         editText_sizeOther = view.findViewById(R.id.editText_otherSize);
+        editText_sizeOther.setEnabled(false);
 
         View.OnClickListener listenerType = new View.OnClickListener() {
             @Override

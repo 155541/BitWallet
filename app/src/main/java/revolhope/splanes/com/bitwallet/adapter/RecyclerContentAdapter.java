@@ -25,14 +25,11 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     private List<Account> accounts;
     private List<Directory> directories;
 
-    private List<Holder> holders;
-
     private Context context;
 
     public RecyclerContentAdapter(Context context)
     {
         this.context = context;
-        holders = new ArrayList<>();
     }
 
     @Override
@@ -85,8 +82,6 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
                             parent,
                             false));
         }
-
-        holders.add(holder);
         return holder;
     }
 
@@ -94,46 +89,19 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position)
     {
-
-        if (accounts != null && !accounts.isEmpty() &&
-            directories != null && !directories.isEmpty())
-        {
-            int dirSize = directories.size();
-            if (position < dirSize)
-            {
-                Directory d = directories.get(position);
-                HolderDir h = (HolderDir) holder;
-
-                h.ivLogo.setImageDrawable(
-                        context.getDrawable(R.drawable.ic_launcher_background));
-                h.textView_Name.setText(d.getName());
-            }
-            else if ((position - dirSize) < accounts.size())
-            {
-                Account account = accounts.get(position - dirSize);
-                HolderAccount h = (HolderAccount) holder;
-
-                h.ivLogo.setImageDrawable(
-                        context.getDrawable(R.drawable.ic_launcher_background));
-                h.textView_Name.setText(account.getAccount());
-                h.textView_Create.setText(
-                        AppUtils.format("Create on: dd/MM/yyyy",
-                                    account.getDateCreate()));
-                if (account.getDateUpdate() != null)
-                {
-                    h.textView_Update.setText(
-                            AppUtils.format("Updated on: dd/MM/yyyy",
-                                    account.getDateUpdate()));
-                }
-                if (account.isExpire())
-                {
-                    h.textView_Expire.setText(
-                            AppUtils.format("Expires on: dd/MM/yyyy",
-                                    account.getDateExpire()));
-                }
-            }
+        if (directories != null && !directories.isEmpty() &&
+            directories.size() > position) {
+            bindDirectory((HolderDir) holder, position);
         }
-
+        else if (directories != null && !directories.isEmpty() &&
+                 accounts != null && !accounts.isEmpty() &&
+                 accounts.size() > position - directories.size()) {
+                bindAccount((HolderAccount) holder, position - directories.size());
+        }
+        else if (accounts != null && !accounts.isEmpty() &&
+                 accounts.size() > position) {
+            bindAccount((HolderAccount) holder, position);
+        }
     }
 
     @Override
@@ -179,6 +147,28 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         notifyDataSetChanged();
     }
 
+    private void bindAccount(@NonNull HolderAccount holder, int position) {
+
+        Account account = accounts.get(position);
+        holder.textView_Name.setText(account.getAccount());
+        holder.textView_Create.setText(String.format("Create on: %s",
+                AppUtils.format("dd/MM/yyyy",account.getDateCreate())));
+        if (account.getDateUpdate() != null)
+        {
+            holder.textView_Update.setText(String.format("Updated on: %s",
+                    AppUtils.format("dd/MM/yyyy", account.getDateUpdate())));
+        }
+        if (account.isExpire())
+        {
+            holder.textView_Expire.setText(String.format("Expires on: %s",
+                    AppUtils.format("dd/MM/yyyy", account.getDateExpire())));
+        }
+    }
+
+    private void bindDirectory(@NonNull HolderDir holder, int position) {
+        Directory d = directories.get(position);
+        holder.textView_Name.setText(d.getName());
+    }
 
 // ============================================================================================== //
 //                                          INNER CLASSES                                             //
@@ -206,6 +196,21 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             textView_Create = view.findViewById(R.id.textView_createOn);
             textView_Update = view.findViewById(R.id.textView_updateOn);
             textView_Expire = view.findViewById(R.id.textView_expire);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return false;
+                }
+            });
+
         }
     }
 
@@ -219,6 +224,21 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             super(view);
             ivLogo = view.findViewById(R.id.ivLogo);
             textView_Name = view.findViewById(R.id.textView_Name);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return false;
+                }
+            });
+
         }
     }
 }
