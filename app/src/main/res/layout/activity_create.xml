@@ -194,7 +194,7 @@
                 android:inputType="textLongMessage|textMultiLine"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                 app:layout_constraintBottom_toBottomOf="@+id/prompt_Password"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_copy"
                 app:layout_constraintStart_toStartOf="@+id/editText_User"
                 app:layout_constraintTop_toTopOf="@+id/prompt_Password"
                 tools:ignore="TextFields" />
@@ -203,7 +203,7 @@
                 android:id="@+id/btGenerate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@android:color/transparent"
                 android:elevation="4dp"
@@ -229,11 +229,12 @@
                 android:id="@+id/textView_ExpireDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-condensed"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/checkBox_Expire"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/checkBox_Expire"
                 app:layout_constraintTop_toBottomOf="@+id/checkBox_Expire" />
 
@@ -266,6 +267,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/editText_Password"
                 app:layout_constraintTop_toTopOf="@+id/prompt_Brief" />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_copy"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/editText_Password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/editText_Password"
+                app:srcCompat="@drawable/ic_copy"
+                android:tint="@color/colorPrimaryDark"
+                android:alpha=".75"
+                android:elevation="4dp"
+                tools:ignore="ContentDescription" />
+
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>

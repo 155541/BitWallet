@@ -30,8 +30,8 @@ public class DialogConfirmation extends DialogFragment {
         spannable.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),
                 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setTitle(spannable);
-        builder.setMessage("Do you really wants to delete this " +
-                (isDirectory ? "directory" : "account") + "?\nThis action can not be undone");
+        builder.setMessage("Do you really want to delete this " +
+                (isDirectory ? "directory" : "account") + "?\n\nThis action can not be undone");
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

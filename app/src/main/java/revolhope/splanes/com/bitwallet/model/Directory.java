@@ -32,4 +32,6 @@ public class Directory {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setParentId(Long id) { this.parentId = id; }
 }

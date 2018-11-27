@@ -1,10 +1,7 @@
 package revolhope.splanes.com.bitwallet.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,7 +22,6 @@ import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
 import revolhope.splanes.com.bitwallet.db.DaoDirectory;
 import revolhope.splanes.com.bitwallet.db.DaoK;
 import revolhope.splanes.com.bitwallet.helper.AppContract;
-import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.helper.DialogHelper;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
@@ -103,6 +99,27 @@ public class MainFragment extends Fragment
 
                             switch (option){
                                 case AppContract.ITEM_MOVE:
+
+                                    DialogMove dialogMove = new DialogMove();
+                                    dialogMove.setName(account.getAccount());
+                                    dialogMove.setListener(new DialogMove.OnMoveListener() {
+                                        @Override
+                                        public void onMove(long newParent) {
+                                            account.setParent(newParent);
+                                            try {
+                                                daoAccount.update(new DaoCallbacks.Update<Account>() {
+                                                    @Override
+                                                    public void onUpdated(Account[] results) {
+                                                        refreshContentRecyclerView();
+                                                    }
+                                                }, new Account[] {account});
+                                            }
+                                            catch (SQLException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    dialogMove.show(getFragmentManager(), "DialogMove");
                                     break;
 
                                 case AppContract.ITEM_DROP:
@@ -148,6 +165,27 @@ public class MainFragment extends Fragment
 
                             switch (option){
                                 case AppContract.ITEM_MOVE:
+
+                                    DialogMove dialogMove = new DialogMove();
+                                    dialogMove.setName(directory.getName());
+                                    dialogMove.setListener(new DialogMove.OnMoveListener() {
+                                        @Override
+                                        public void onMove(long newParent) {
+                                            try {
+                                                directory.setParentId(newParent);
+                                                daoDirectory.update(new DaoCallbacks.Update<Directory>() {
+                                                    @Override
+                                                    public void onUpdated(Directory[] results) {
+                                                        refreshContentRecyclerView();
+                                                    }
+                                                }, directory);
+                                            }
+                                            catch (SQLException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    dialogMove.show(getFragmentManager(), "DialogMove");
                                     break;
                                 case AppContract.ITEM_UPDATE:
 
