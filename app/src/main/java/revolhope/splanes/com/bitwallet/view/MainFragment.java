@@ -43,18 +43,20 @@ public class MainFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        if (getContext() == null) return null;
+
         daoDirectory = DaoDirectory.getInstance(getContext());
         daoAccount = DaoAccount.getInstance(getContext());
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        RecyclerView recyclerViewContent = rootView.findViewById(R.id.recyclerViewContent);
+        final RecyclerView recyclerViewContent = rootView.findViewById(R.id.recyclerViewContent);
         RecyclerView recyclerViewPath = rootView.findViewById(R.id.recyclerViewPath);
 
         recyclerViewContent.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewPath.setLayoutManager(new LinearLayoutManager(getContext(),
                                                                   LinearLayoutManager.HORIZONTAL,
                                                                   false));
-
         contentAdapter = new RecyclerContentAdapter(getContext());
 
         contentAdapter.setOnClickAcc(new OnAccClick() {
@@ -89,12 +91,9 @@ public class MainFragment extends Fragment
             public void onLongClick(final Account account) {
 
                 if (getActivity() != null) {
-                    Vibrator v = (Vibrator) getActivity()
-                            .getSystemService(Context.VIBRATOR_SERVICE);
-                    if (v != null)
-                        v.vibrate(VibrationEffect.createOneShot(100,
-                                VibrationEffect.DEFAULT_AMPLITUDE));
+                    ((MainActivity)getActivity()).vibrate(100);
                 }
+
                 if (getFragmentManager() != null) {
                     DialogHolderOptions dialogHolderOptions = new DialogHolderOptions();
                     dialogHolderOptions.isDirectory(false);
@@ -131,53 +130,14 @@ public class MainFragment extends Fragment
         contentAdapter.setOnClickDir(new OnDirClick() {
             @Override
             public void onClick(final Directory directory) {
-                try {
-                    daoDirectory.findChildrenAt(directory.get_id(),
-                            new DaoCallbacks.Select<Directory>() {
-                                @Override
-                                public void onSelected(final Directory[] selection) {
-
-                                    if (getActivity() != null) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                contentAdapter.setDirectories(Arrays.asList(selection));
-                                                currentDir = directory;
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                    daoAccount.findAllAt(directory.get_id(), new DaoCallbacks.Select<Account>() {
-                        @Override
-                        public void onSelected(final Account[] selection) {
-                            if (getActivity() != null) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        contentAdapter.setAccounts(Arrays.asList(selection));
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-                catch (SQLException e) {
-                    e.printStackTrace();
-                    if (getContext() != null) {
-                        DialogHelper.showInfo("SQL Error", e.getMessage(), getContext());
-                    }
-                }
+                currentDir = directory;
+                refreshContentRecyclerView();
             }
 
             @Override
             public void onLongClick(final Directory directory) {
                 if (getActivity() != null) {
-                    Vibrator v = (Vibrator) getActivity()
-                            .getSystemService(Context.VIBRATOR_SERVICE);
-                    if (v != null)
-                        v.vibrate(VibrationEffect.createOneShot(100,
-                                VibrationEffect.DEFAULT_AMPLITUDE));
+                    ((MainActivity) getActivity()).vibrate(100);
                 }
                 if (getFragmentManager() != null) {
                     DialogHolderOptions dialogHolderOptions = new DialogHolderOptions();
@@ -321,8 +281,6 @@ public class MainFragment extends Fragment
 
         //RecyclerPathAdapter pathAdapter = new RecyclerPathAdapter(getContext());
 
-
-
         return rootView;
     }
 
@@ -330,69 +288,19 @@ public class MainFragment extends Fragment
     public void onResume() {
         try
         {
-            if (currentDir == null && getActivity() != null) {
+            if (currentDir == null) {
                 daoDirectory.findRoot(new DaoCallbacks.Select<Directory>() {
                     @Override
                     public void onSelected(Directory[] selection) {
                         if (selection != null && selection.length == 1) {
                             currentDir = selection[0];
+                            refreshContentRecyclerView();
                         }
                     }
                 });
-
-                daoDirectory.findInRoot(new DaoCallbacks.Select<Directory>() {
-                    @Override
-                    public void onSelected(final Directory[] selection) {
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    contentAdapter.setDirectories(Arrays.asList(selection));
-                                }
-                            });
-                    }
-                });
-
-                daoAccount.findInRoot(new DaoCallbacks.Select<Account>() {
-                    @Override
-                    public void onSelected(final Account[] selection) {
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    contentAdapter.setAccounts(Arrays.asList(selection));
-                                }
-                            });
-                    }
-                });
             }
-            else if (getActivity() != null){
-                daoDirectory.findChildrenAt(currentDir.get_id(), new DaoCallbacks.Select<Directory>() {
-                    @Override
-                    public void onSelected(final Directory[] selection) {
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    contentAdapter.setDirectories(Arrays.asList(selection));
-                                }
-                            });
-
-                    }
-                });
-
-                daoAccount.findAllAt(currentDir.get_id(), new DaoCallbacks.Select<Account>() {
-                    @Override
-                    public void onSelected(final Account[] selection) {
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    contentAdapter.setAccounts(Arrays.asList(selection));
-                                }
-                            });
-                    }
-                });
+            else {
+                refreshContentRecyclerView();
             }
         }
         catch(SQLException exc)
@@ -471,21 +379,25 @@ public class MainFragment extends Fragment
         }
     }
 
+    RecyclerContentAdapter getContentAdapter() { return contentAdapter; }
+
     public void dropData(boolean isDirectory, Object id) {
         try {
-            if (isDirectory) {
-                daoDirectory.delete(new DaoCallbacks.Delete() {
-                    @Override
-                    public void onDelete(int deleteCode) {
 
+            DaoCallbacks.Delete delete = new DaoCallbacks.Delete() {
+                @Override
+                public void onDelete(int deleteCode) {
+                    if (deleteCode == DaoCallbacks.DELETE_OK) {
+                        refreshContentRecyclerView();
                     }
-                }, (Long)id);
+                }
+            };
+
+            if (isDirectory) {
+                daoDirectory.delete(delete, (Long)id);
             }
             else {
-                daoAccount.delete(new DaoCallbacks.Delete() {
-                    @Override
-                    public void onDelete(int deleteCode) { }
-                }, new String[]{id.toString()});
+                daoAccount.delete(delete, new String[]{id.toString()});
             }
         }
         catch (SQLException e)
@@ -502,6 +414,43 @@ public class MainFragment extends Fragment
         return this.currentDir != null ? currentDir.get_id() : null;
 
     }
+
+    private void refreshContentRecyclerView() {
+        try {
+            daoDirectory.findChildrenAt(currentDir.get_id(),
+                    new DaoCallbacks.Select<Directory>() {
+                        @Override
+                        public void onSelected(final Directory[] selection) {
+                            if (getActivity() != null) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        contentAdapter.setDirectories(Arrays.asList(selection));
+                                    }
+                                });
+                            }
+                        }
+                    });
+            daoAccount.findAllAt(currentDir.get_id(), new DaoCallbacks.Select<Account>() {
+                @Override
+                public void onSelected(final Account[] selection) {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                contentAdapter.setAccounts(Arrays.asList(selection));
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ===== LISTENERS =====
 
     public interface OnAccClick {
         void onClick(Account account);

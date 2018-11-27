@@ -1,7 +1,10 @@
 package revolhope.splanes.com.bitwallet.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,6 +17,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Objects;
 
 import revolhope.splanes.com.bitwallet.R;
 import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
@@ -49,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), AccountActivity.class);
                 i.putExtra(AppContract.EXTRA_CURRENT_DIR, mainFragment.getCurrentDir());
                 startActivity(i);
-                finish();
             }
         });
 
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DialogFolder dialogFolder = new DialogFolder();
+                dialogFolder.isNew(true);
                 dialogFolder.show(getSupportFragmentManager(), "DialogFolder");
             }
         });
@@ -84,10 +89,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private SectionsPagerAdapter(FragmentManager fm) {
@@ -142,13 +144,16 @@ public class MainActivity extends AppCompatActivity {
                 DaoDirectory daoDirectory = DaoDirectory.getInstance(this);
                 daoDirectory.insert(new DaoCallbacks.Update<Directory>() {
                     @Override
-                    public void onUpdated(Directory[] results) {
+                    public void onUpdated(final Directory[] results) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(),
                                          "Directory created!", Toast.LENGTH_SHORT)
                                         .show();
+
+                                Objects.requireNonNull(mainFragment.getContentAdapter())
+                                        .addDirectories(Arrays.asList(results));
                             }
                         });
                     }
@@ -162,5 +167,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Couldn't get parent folder...", Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    public void vibrate(int time) {
+        Objects.requireNonNull((Vibrator)getSystemService(Context.VIBRATOR_SERVICE))
+                .vibrate(VibrationEffect.createOneShot(time,VibrationEffect.DEFAULT_AMPLITUDE));
     }
 }
