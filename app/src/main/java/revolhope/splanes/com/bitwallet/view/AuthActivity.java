@@ -18,6 +18,8 @@ import revolhope.splanes.com.bitwallet.helper.FingerprintHelper;
 public class AuthActivity extends AppCompatActivity {
     
     private FingerprintManager fingerprintManager;
+    private boolean hasRequirements = false;
+
     private ImageView[] ivPattern = new ImageView[9];
     private int[] patternImageViewIds = new int[]{
             R.id.imageView_pattern11, R.id.imageView_pattern12, R.id.imageView_pattern13,
@@ -33,31 +35,13 @@ public class AuthActivity extends AppCompatActivity {
         bindImageViewPattern();
 
         fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-        
-        if (fingerprintManager != null &&
-            checkFingerprintRequirement(fingerprintManager)) {
-
-            try  {
-
-                FingerprintManager.CryptoObject cryptoObj =
-                        new FingerprintManager
-                                .CryptoObject(FingerprintHelper.getFingerprintCipher());
-
-                FingerprintHelper.AuthCallback callback =
-                        new FingerprintHelper.AuthCallback(this);
-
-                callback.startAuth(fingerprintManager, cryptoObj);
-            }
-
-            catch(Exception exc) {
-                exc.printStackTrace();
-            }
-        }
+        if (fingerprintManager != null)
+            hasRequirements = checkFingerprintRequirement(fingerprintManager);
     }
 
     @Override
     protected void onResume() {
-        if (fingerprintManager != null) {
+        if (fingerprintManager != null && hasRequirements) {
             try  {
                 FingerprintManager.CryptoObject cryptoObj =
                         new FingerprintManager.CryptoObject(FingerprintHelper.getFingerprintCipher());

@@ -92,12 +92,13 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     public void onBindViewHolder(@NonNull Holder holder, int position)
     {
         if (directories != null && !directories.isEmpty() &&
-            directories.size() > position) {
+            directories.size() > position && holder instanceof HolderDir) {
             bindDirectory((HolderDir) holder, position);
         }
         else if (directories != null && !directories.isEmpty() &&
                  accounts != null && !accounts.isEmpty() &&
-                 accounts.size() > position - directories.size()) {
+                 accounts.size() > position - directories.size() &&
+                 holder instanceof HolderAccount) {
                 bindAccount((HolderAccount) holder, position - directories.size());
         }
         else if (accounts != null && !accounts.isEmpty() &&
@@ -143,7 +144,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             this.accounts = accounts;
             notifyDataSetChanged();
         }
-        catch (IllegalStateException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -154,7 +155,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             this.directories = directories;
             notifyDataSetChanged();
         }
-        catch (IllegalStateException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

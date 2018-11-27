@@ -107,11 +107,23 @@ public class MainFragment extends Fragment
                                     break;
 
                                 case AppContract.ITEM_DROP:
+
+                                    DialogConfirmation dialogConfirmation = new DialogConfirmation();
+                                    dialogConfirmation.isDirectory(false);
+                                    dialogConfirmation.setListener(
+                                            new DialogConfirmation.OnConfirmListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                            dropData(false, account.get_id());
+                                        }
+                                    });
+                                    dialogConfirmation.show(getFragmentManager(), "Confirm");
                                     break;
                             }
                         }
                     });
-                    dialogHolderOptions.show(getFragmentManager(), "OptionDialog");
+                    if (getFragmentManager() != null)
+                        dialogHolderOptions.show(getFragmentManager(), "OptionDialog");
                 }
             }
         });
@@ -233,6 +245,18 @@ public class MainFragment extends Fragment
                                     dialogFolder.show(getFragmentManager(), "FolderDialog");
                                     break;
                                 case AppContract.ITEM_DROP:
+
+                                    DialogConfirmation dialogConfirmation = new DialogConfirmation();
+                                    dialogConfirmation.isDirectory(true);
+                                    dialogConfirmation.setListener(
+                                            new DialogConfirmation.OnConfirmListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                            dropData(true, directory.get_id());
+                                        }
+                                    });
+                                    dialogConfirmation.show(getFragmentManager(),
+                                            "ConfirmDialog");
                                     break;
                             }
                         }
@@ -264,15 +288,29 @@ public class MainFragment extends Fragment
 
             daoDirectory.findInRoot(new DaoCallbacks.Select<Directory>() {
                 @Override
-                public void onSelected(Directory[] selection) {
-                    contentAdapter.setDirectories(Arrays.asList(selection));
+                public void onSelected(final Directory[] selection) {
+                    if (getActivity() != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                contentAdapter.setDirectories(Arrays.asList(selection));
+                            }
+                        });
+                    }
                 }
             });
 
             daoAccount.findInRoot(new DaoCallbacks.Select<Account>() {
                 @Override
-                public void onSelected(Account[] selection) {
-                    contentAdapter.setAccounts(Arrays.asList(selection));
+                public void onSelected(final Account[] selection) {
+                    if (getActivity() != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                contentAdapter.setAccounts(Arrays.asList(selection));
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -430,6 +468,31 @@ public class MainFragment extends Fragment
                     getActivity().finish();*/
                 }
             }
+        }
+    }
+
+    public void dropData(boolean isDirectory, Object id) {
+        try {
+            if (isDirectory) {
+                daoDirectory.delete(new DaoCallbacks.Delete() {
+                    @Override
+                    public void onDelete(int deleteCode) {
+
+                    }
+                }, (Long)id);
+            }
+            else {
+                daoAccount.delete(new DaoCallbacks.Delete() {
+                    @Override
+                    public void onDelete(int deleteCode) { }
+                }, new String[]{id.toString()});
+            }
+        }
+        catch (SQLException e)
+        {
+            if (getContext() != null)
+                DialogHelper.showInfo("SQL Error", e.getMessage(), getContext());
+            e.printStackTrace();
         }
     }
 

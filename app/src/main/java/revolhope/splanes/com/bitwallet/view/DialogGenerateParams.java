@@ -110,23 +110,38 @@ public class DialogGenerateParams extends DialogFragment {
                 boolean checked = ((RadioButton) view).isChecked();
                 switch(view.getId()) {
                     case R.id.radioButton_size8:
-                        if (checked) size = RandomGenerator.SIZE_8;
+                        if (checked) {
+                            size = RandomGenerator.SIZE_8;
+                            editText_sizeOther.setEnabled(false);
+                        }
                         else size = -1;
                         break;
                     case R.id.radioButton_size16:
-                        if (checked) size = RandomGenerator.SIZE_16;
+                        if (checked) {
+                            size = RandomGenerator.SIZE_16;
+                            editText_sizeOther.setEnabled(false);
+                        }
                         else size = -1;
                         break;
                     case R.id.radioButton_size24:
-                        if (checked) size = RandomGenerator.SIZE_24;
+                        if (checked) {
+                            size = RandomGenerator.SIZE_24;
+                            editText_sizeOther.setEnabled(false);
+                        }
                         else size = -1;
                         break;
                     case R.id.radioButton_size32:
-                        if (checked) size = RandomGenerator.SIZE_32;
+                        if (checked) {
+                            size = RandomGenerator.SIZE_32;
+                            editText_sizeOther.setEnabled(false);
+                        }
                         else size = -1;
                         break;
                     case R.id.radioButton_size64:
-                        if (checked) size = RandomGenerator.SIZE_64;
+                        if (checked) {
+                            size = RandomGenerator.SIZE_64;
+                            editText_sizeOther.setEnabled(false);
+                        }
                         else size = -1;
                         break;
                     case R.id.radioButton_sizeOther:
