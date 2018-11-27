@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MainFragment mainFragment;
     private OptionsFragment optionsFragment;
+    private int currFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabFolder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogNewFolder dialogNewFolder = new DialogNewFolder();
-                dialogNewFolder.show(getSupportFragmentManager(), "DialogNewFolder");
+                DialogFolder dialogFolder = new DialogFolder();
+                dialogFolder.show(getSupportFragmentManager(), "DialogFolder");
             }
         });
     }
@@ -96,7 +97,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
 
-            return position == 0 ? mainFragment : optionsFragment;
+            if (position == 0) {
+                currFragment = 0;
+                return mainFragment;
+            }
+            else {
+                currFragment = 1;
+                return optionsFragment;
+            }
         }
 
         @Override
@@ -115,6 +123,15 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (mainFragment != null && currFragment == 0) {
+            mainFragment.goBack();
+        }
+
+        super.onBackPressed();
+    }
 
     public void newFolder(String folderName) {
 

@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import revolhope.splanes.com.bitwallet.R;
 
-public class DialogNewFolder extends DialogFragment {
+public class DialogFolder extends DialogFragment {
 
+    private OnUpdateFolder callback;
+    private boolean isNew;
 
     @NonNull
     @Override
@@ -35,17 +37,20 @@ public class DialogNewFolder extends DialogFragment {
             final EditText editText_folderName = view.findViewById(R.id.editText_folderName);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            Spannable spannable = new SpannableString("New folder");
+            Spannable spannable = new SpannableString(isNew ? "New folder" : "Update folder");
             spannable.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),
                     0,spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             builder.setTitle(spannable);
             builder.setView(view);
-            builder.setPositiveButton("create", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(isNew ? "create" : "update", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     String name = editText_folderName.getText().toString();
-                    if (!name.isEmpty() && getActivity() != null) {
+                    if (!name.isEmpty() && getActivity() != null && isNew) {
                         ((MainActivity) getActivity()).newFolder(name);
+                    }
+                    else if (!name.isEmpty() && getActivity() != null && !isNew) {
+                        callback.onUpdate(name);
                     }
                     else {
                         Toast.makeText(getContext(), "Invalid folder name",
@@ -63,5 +68,17 @@ public class DialogNewFolder extends DialogFragment {
             return builder.create();
         }
         return super.onCreateDialog(savedInstanceState);
+    }
+
+    public void isNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public void setCallback(OnUpdateFolder callback) {
+        this.callback = callback;
+    }
+
+    public interface OnUpdateFolder{
+        void onUpdate(String newName);
     }
 }

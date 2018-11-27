@@ -17,7 +17,7 @@ import revolhope.splanes.com.bitwallet.helper.FingerprintHelper;
 
 public class AuthActivity extends AppCompatActivity {
     
-    
+    private FingerprintManager fingerprintManager;
     private ImageView[] ivPattern = new ImageView[9];
     private int[] patternImageViewIds = new int[]{
             R.id.imageView_pattern11, R.id.imageView_pattern12, R.id.imageView_pattern13,
@@ -31,11 +31,8 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         
         bindImageViewPattern();
-        
-        KeyguardManager keyguardManager =
-            (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        FingerprintManager fingerprintManager =
-            (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+
+        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
         
         if (fingerprintManager != null &&
             checkFingerprintRequirement(fingerprintManager)) {
@@ -51,12 +48,32 @@ public class AuthActivity extends AppCompatActivity {
 
                 callback.startAuth(fingerprintManager, cryptoObj);
             }
+
             catch(Exception exc) {
                 exc.printStackTrace();
             }
         }
     }
-    
+
+    @Override
+    protected void onResume() {
+        if (fingerprintManager != null) {
+            try  {
+                FingerprintManager.CryptoObject cryptoObj =
+                        new FingerprintManager.CryptoObject(FingerprintHelper.getFingerprintCipher());
+
+                FingerprintHelper.AuthCallback callback =
+                        new FingerprintHelper.AuthCallback(this);
+
+                callback.startAuth(fingerprintManager, cryptoObj);
+            }
+            catch(Exception exc) {
+                exc.printStackTrace();
+            }
+        }
+        super.onResume();
+    }
+
     private void bindImageViewPattern() {
         for (int i = 0 ; i < 9 ; i++) {
             ivPattern[i] = findViewById(patternImageViewIds[i]);

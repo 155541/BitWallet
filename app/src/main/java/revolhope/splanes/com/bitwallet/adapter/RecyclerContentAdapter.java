@@ -88,7 +88,6 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         return holder;
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position)
     {
@@ -140,21 +139,31 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
     public void setAccounts(List<Account> accounts)
     {
-        this.accounts = accounts;
-        notifyDataSetChanged();
+        try {
+            this.accounts = accounts;
+            notifyDataSetChanged();
+        }
+        catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setDirectories(List<Directory> directories)
     {
-        this.directories = directories;
-        notifyDataSetChanged();
+        try {
+            this.directories = directories;
+            notifyDataSetChanged();
+        }
+        catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     private void bindAccount(@NonNull HolderAccount holder, int position) {
 
         Account account = accounts.get(position);
         holder.textView_Name.setText(account.getAccount());
-        holder.textView_Create.setText(String.format("Create on: %s",
+        holder.textView_Create.setText(String.format("Created on: %s",
                 AppUtils.format("dd/MM/yyyy",account.getDateCreate())));
         if (account.getDateUpdate() != null && account.getDateUpdate() != 0)
         {
@@ -223,7 +232,16 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    return false;
+                    int pos = directories == null || directories.isEmpty() ?
+                            getAdapterPosition() : getAdapterPosition() - directories.size();
+                    if (pos >= 0 && accounts != null && accounts.size() > pos) {
+                        onClickAcc.onLongClick(accounts.get(pos));
+                    }
+                    else {
+                        Toast.makeText(context, "Error to get the account clicked...",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    return true;
                 }
             });
 
@@ -256,7 +274,14 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    return false;
+                    if (directories != null && directories.size() > getAdapterPosition()) {
+                        onClickDir.onLongClick(directories.get(getAdapterPosition()));
+                    }
+                    else {
+                        Toast.makeText(context, "Error to get the directory clicked...",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    return true;
                 }
             });
         }

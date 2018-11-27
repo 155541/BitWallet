@@ -31,7 +31,7 @@
     <string name="prompt__24_characters">24 Characters</string>
     <string name="prompt__32_characters">32 Characters</string>
     <string name="prompt__64_characters">64 Characters</string>
-    <string name="prompt_other_size">Other size</string>
+    <string name="prompt_other_size">Other size:</string>
     <string name="prompt_specify_length">Specify length</string>
     <string name="hint_set_folder_name">Set folder name</string>
 </resources>

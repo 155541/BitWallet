@@ -28,4 +28,8 @@ public class Directory {
     public Long getParentId() {
         return parentId;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

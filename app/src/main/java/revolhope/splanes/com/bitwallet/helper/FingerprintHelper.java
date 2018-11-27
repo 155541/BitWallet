@@ -100,8 +100,6 @@ public abstract class FingerprintHelper {
                     vibrator.vibrate(VibrationEffect.createOneShot(200,
                             VibrationEffect.DEFAULT_AMPLITUDE));
                 }
-
-                ((Activity) context).finish();
             }
         }
     }

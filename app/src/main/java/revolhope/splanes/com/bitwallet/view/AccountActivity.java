@@ -1,5 +1,6 @@
 package revolhope.splanes.com.bitwallet.view;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +102,9 @@ public class AccountActivity extends AppCompatActivity {
         TextView textView_Id = findViewById(R.id.textView_Id);
         textView_Id.setText(account.get_id());
 
+        // TODO: Delete if doesn't works
+        textView_Id.requestFocus();
+
         if (!isNew) {
 
             editText_Account.setText(account.getAccount());
@@ -108,8 +114,8 @@ public class AccountActivity extends AppCompatActivity {
             checkBox_Expire.setChecked(account.isExpire());
             textView_ExpireDate.setText(account.getDateExpire() == null ||
                                         account.getDateExpire() == 0 ?
-                                        "" : AppUtils.format("dd/MM/yyyy",
-                                                              account.getDateExpire()));
+                                        "" : "Expires on:" + AppUtils.format("dd/MM/yyyy",
+                                                                account.getDateExpire()));
 
             try {
 
@@ -130,6 +136,40 @@ public class AccountActivity extends AppCompatActivity {
                 DialogHelper.showInfo("Decryption error", e.getMessage(), this);
             }
         }
+
+        final Calendar cal = Calendar.getInstance();
+        final DatePickerDialog dialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year,
+                                          int month, int day) {
+                        cal.set(Calendar.YEAR, year);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.DAY_OF_MONTH, day);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView_ExpireDate.setText(
+                                        String.format("Expires on: %s",AppUtils.format(
+                                                                "dd/MM/yyyy",
+                                                                 cal.getTimeInMillis())));
+                            }
+                        });
+                    }
+                },
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH));
+
+        checkBox_Expire.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    dialog.show();
+                }
+            }
+        });
 
         btDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,9 +306,12 @@ public class AccountActivity extends AppCompatActivity {
                 }
                 else {
 
+                    Long id = k.get_id();
                     k = crypto.encrypt(pwd.getBytes(Charset.forName("UTF-8")), account.get_id());
                     if (k != null) {
                         cal.add(Calendar.MONTH, 3);
+
+                        k.set_id(id);
                         k.setDeadline(cal.getTimeInMillis());
 
                         insertControl = 0;

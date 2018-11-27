@@ -130,8 +130,8 @@ public class DialogGenerateParams extends DialogFragment {
                         else size = -1;
                         break;
                     case R.id.radioButton_sizeOther:
-                        if (checked) editText_sizeOther.setEnabled(true);
-                        else size = -1;
+                        editText_sizeOther.setEnabled(checked);
+                        if(!checked) size = -1;
                         break;
                 }
             }
