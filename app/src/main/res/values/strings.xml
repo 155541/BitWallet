@@ -34,4 +34,6 @@
     <string name="prompt_other_size">Other size:</string>
     <string name="prompt_specify_length">Specify length</string>
     <string name="hint_set_folder_name">Set folder name</string>
+    <string name="slash">/</string>
+    <string name="prompt_home">Home</string>
 </resources>

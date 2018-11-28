@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import revolhope.splanes.com.bitwallet.R;
@@ -22,16 +23,15 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     private static final int TYPE_DIR = 352;
     private static final int TYPE_ACC = 718;
 
-    private List<Account> accounts;
-    private List<Directory> directories;
+    private List<Account> accounts = new ArrayList<>();;
+    private List<Directory> directories = new ArrayList<>();;
 
     private MainFragment.OnAccClick onClickAcc;
     private MainFragment.OnDirClick onClickDir;
 
     private Context context;
 
-    public RecyclerContentAdapter(Context context)
-    {
+    public RecyclerContentAdapter(Context context) {
         this.context = context;
     }
 
@@ -122,18 +122,18 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     @Override
     public int getItemViewType(int position) {
 
-        if (accounts != null && !accounts.isEmpty() &&
-            directories != null && !directories.isEmpty())
-        {
-            int dirSize = directories.size();
-            if (position < dirSize)
-            {
-                return TYPE_DIR;
-            }
-            else
-            {
-                return TYPE_ACC;
-            }
+        if (directories.isEmpty() && accounts.isEmpty()) {
+            return super.getItemViewType(position);
+        }
+        else if (!directories.isEmpty() && directories.size() > position) {
+            return TYPE_DIR;
+        }
+        else if (directories.isEmpty() && accounts.size() > position) {
+            return TYPE_ACC;
+        }
+        else if (!directories.isEmpty() && !accounts.isEmpty() &&
+                  accounts.size() > (position - directories.size())) {
+            return TYPE_ACC;
         }
         return super.getItemViewType(position);
     }
@@ -141,7 +141,8 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     public void setAccounts(List<Account> accounts)
     {
         try {
-            this.accounts = accounts;
+            this.accounts.clear();
+            this.accounts.addAll(accounts);
             notifyDataSetChanged();
         }
         catch (Exception e) {
@@ -152,7 +153,8 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     public void setDirectories(List<Directory> directories)
     {
         try {
-            this.directories = directories;
+            this.directories.clear();
+            this.directories.addAll(directories);
             notifyDataSetChanged();
         }
         catch (Exception e) {
@@ -163,7 +165,9 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     public void addDirectories(List<Directory> directories)
     {
         try {
-            this.directories.addAll(directories);
+            if (directories != null) {
+                this.directories.addAll(directories);
+            }
             notifyDataSetChanged();
         }
         catch (Exception e) {

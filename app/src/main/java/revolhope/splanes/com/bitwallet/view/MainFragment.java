@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import revolhope.splanes.com.bitwallet.R;
 import revolhope.splanes.com.bitwallet.adapter.RecyclerContentAdapter;
+import revolhope.splanes.com.bitwallet.adapter.RecyclerPathAdapter;
 import revolhope.splanes.com.bitwallet.db.DaoAccount;
 import revolhope.splanes.com.bitwallet.db.DaoCallbacks;
 import revolhope.splanes.com.bitwallet.db.DaoDirectory;
@@ -31,6 +32,7 @@ public class MainFragment extends Fragment
 {
     private Directory currentDir;
     private RecyclerContentAdapter contentAdapter;
+    private RecyclerPathAdapter pathAdapter;
     private DaoDirectory daoDirectory;
     private DaoAccount daoAccount;
     //RecyclerPathAdapter pathAdapter;
@@ -40,6 +42,18 @@ public class MainFragment extends Fragment
                              Bundle savedInstanceState) {
 
         if (getContext() == null) return null;
+
+        if (getActivity() != null) {
+
+            ((MainActivity)getActivity())
+                    .setOnBackPressedListener(new MainActivity.OnBackPressedListener() {
+                        @Override
+                        public void onBackPressed() {
+                            goBack();
+                        }
+                    });
+
+        }
 
         daoDirectory = DaoDirectory.getInstance(getContext());
         daoAccount = DaoAccount.getInstance(getContext());
@@ -53,6 +67,17 @@ public class MainFragment extends Fragment
         recyclerViewPath.setLayoutManager(new LinearLayoutManager(getContext(),
                                                                   LinearLayoutManager.HORIZONTAL,
                                                                   false));
+
+        pathAdapter = new RecyclerPathAdapter(getContext());
+        pathAdapter.setOnClickListener(new RecyclerPathAdapter.OnClickListener() {
+            @Override
+            public void onClick(Directory directory) {
+                currentDir = directory;
+                refreshContentRecyclerView();
+            }
+        });
+        recyclerViewPath.setAdapter(pathAdapter);
+
         contentAdapter = new RecyclerContentAdapter(getContext());
 
         contentAdapter.setOnClickAcc(new OnAccClick() {
@@ -148,6 +173,7 @@ public class MainFragment extends Fragment
             @Override
             public void onClick(final Directory directory) {
                 currentDir = directory;
+                pathAdapter.addDirectory(currentDir);
                 refreshContentRecyclerView();
             }
 
@@ -273,6 +299,8 @@ public class MainFragment extends Fragment
 
         recyclerViewContent.setAdapter(contentAdapter);
 
+
+
         try
         {
             daoDirectory.findRoot(new DaoCallbacks.Select<Directory>() {
@@ -317,8 +345,6 @@ public class MainFragment extends Fragment
             exc.printStackTrace();
         }
 
-        //RecyclerPathAdapter pathAdapter = new RecyclerPathAdapter(getContext());
-
         return rootView;
     }
 
@@ -350,69 +376,74 @@ public class MainFragment extends Fragment
 
     public void goBack() {
 
-        if (currentDir != null) {
+        if (currentDir != null && !currentDir.getName().equals("Root")) {
 
-            if (!currentDir.getName().equals("Root")) {
-
-                try {
-                    daoDirectory.findChildrenAt(currentDir.getParentId(),
-                                                new DaoCallbacks.Select<Directory>() {
+            try {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void onSelected(final Directory[] selection) {
-                            if (selection != null) {
-                                if (getActivity() != null) {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            contentAdapter.setDirectories(Arrays.asList(selection));
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-                    daoAccount.findAllAt(currentDir.getParentId(),
-                                         new DaoCallbacks.Select<Account>() {
-                        @Override
-                        public void onSelected(final Account[] selection) {
-                            if (selection != null) {
-                                if (getActivity() != null) {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            contentAdapter.setAccounts(Arrays.asList(selection));
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-                    daoDirectory.findById(currentDir.getParentId(),
-                                          new DaoCallbacks.Select<Directory>() {
-                        @Override
-                        public void onSelected(Directory[] selection) {
-                            if (selection != null && selection.length == 1) {
-                                currentDir = selection[0];
-                            }
+                        public void run() {
+                            pathAdapter.removeDirectory(currentDir);
                         }
                     });
                 }
-                catch (SQLException e) {
-                    if (getContext() != null)
-                        DialogHelper.showInfo("SQL Error", e.getMessage(), getContext());
-                    e.printStackTrace();
-                }
+                daoDirectory.findChildrenAt(currentDir.getParentId(),
+                        new DaoCallbacks.Select<Directory>() {
+                            @Override
+                            public void onSelected(final Directory[] selection) {
+                                if (selection != null) {
+                                    if (getActivity() != null) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                contentAdapter.setDirectories(Arrays.asList(selection));
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                daoAccount.findAllAt(currentDir.getParentId(),
+                        new DaoCallbacks.Select<Account>() {
+                            @Override
+                            public void onSelected(final Account[] selection) {
+                                if (selection != null) {
+                                    if (getActivity() != null) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                contentAdapter.setAccounts(Arrays.asList(selection));
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                daoDirectory.findById(currentDir.getParentId(),
+                        new DaoCallbacks.Select<Directory>() {
+                            @Override
+                            public void onSelected(Directory[] selection) {
+                                if (selection != null && selection.length == 1) {
+                                    currentDir = selection[0];
+                                }
+                            }
+                        });
             }
-            else {
-                if (getContext() != null && getActivity() != null) {
-                    DialogHelper.showInfo("Confirm",
-                            "Are you sure you want to exit?",
-                            getContext());
-                    // TODO -------------------------
+            catch (SQLException e) {
+                if (getContext() != null)
+                    DialogHelper.showInfo("SQL Error", e.getMessage(), getContext());
+                e.printStackTrace();
+            }
+        }
+        else if (currentDir != null){
+            if (getContext() != null && getActivity() != null) {
+                DialogHelper.showInfo("Confirm",
+                        "Are you sure you want to exit?",
+                        getContext());
+                // TODO -------------------------
                     /*Intent i = new Intent(getContext(), AuthActivity.class);
                     startActivity(i);
                     getActivity().finish();*/
-                }
             }
         }
     }

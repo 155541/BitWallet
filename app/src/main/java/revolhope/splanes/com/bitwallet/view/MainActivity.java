@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MainFragment mainFragment;
     private OptionsFragment optionsFragment;
-    private int currFragment;
+    private OnBackPressedListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private SectionsPagerAdapter(FragmentManager fm) {
@@ -98,15 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-
-            if (position == 0) {
-                currFragment = 0;
-                return mainFragment;
-            }
-            else {
-                currFragment = 1;
-                return optionsFragment;
-            }
+            return position == 0 ? mainFragment : optionsFragment;
         }
 
         @Override
@@ -128,11 +119,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if (mainFragment != null && currFragment == 0) {
-            mainFragment.goBack();
+        if (listener != null) {
+            listener.onBackPressed();
         }
-
-        super.onBackPressed();
+        else {
+            super.onBackPressed();
+        }
     }
 
     public void newFolder(String folderName) {
@@ -169,8 +161,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setOnBackPressedListener(OnBackPressedListener listener) {
+        this.listener = listener;
+    }
+
     public void vibrate(int time) {
         Objects.requireNonNull((Vibrator)getSystemService(Context.VIBRATOR_SERVICE))
                 .vibrate(VibrationEffect.createOneShot(time,VibrationEffect.DEFAULT_AMPLITUDE));
+    }
+
+    public interface OnBackPressedListener {
+        void onBackPressed();
     }
 }
