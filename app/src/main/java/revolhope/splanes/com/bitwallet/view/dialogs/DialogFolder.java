@@ -1,4 +1,4 @@
-package revolhope.splanes.com.bitwallet.view;
+package revolhope.splanes.com.bitwallet.view.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import revolhope.splanes.com.bitwallet.R;
+import revolhope.splanes.com.bitwallet.view.MainActivity;
 
 public class DialogFolder extends DialogFragment {
 

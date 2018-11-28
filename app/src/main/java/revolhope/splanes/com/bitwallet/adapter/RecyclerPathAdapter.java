@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import revolhope.splanes.com.bitwallet.R;
@@ -42,24 +45,24 @@ public class RecyclerPathAdapter extends RecyclerView.Adapter<RecyclerPathAdapte
             if (!directories.isEmpty()) {
                 SpannableString content = new SpannableString(context.getString(R.string.prompt_home));
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                holder.textViewName.setTextColor(context.getColor(R.color.colorAccent));
+                content.setSpan(new ForegroundColorSpan(context.getColor(R.color.colorAccent)),
+                        0, content.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.textViewName.setText(content);
             }
             else {
                 holder.textViewName.setText(R.string.prompt_home);
-                holder.textViewName.setTextColor(null);
             }
         }
         else {
             if (position != directories.size()) { // NOT LAST
                 SpannableString content = new SpannableString(directories.get(position-1).getName());
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                content.setSpan(new ForegroundColorSpan(context.getColor(R.color.colorAccent)),
+                        0, content.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.textViewName.setText(content);
-                holder.textViewName.setTextColor(context.getColor(R.color.colorAccent));
             }
             else { // LAST
                 holder.textViewName.setText(directories.get(position-1).getName());
-                holder.textViewName.setTextColor(null);
             }
         }
     }
@@ -71,6 +74,12 @@ public class RecyclerPathAdapter extends RecyclerView.Adapter<RecyclerPathAdapte
             return directories.size() + 1;
         }
         else return 1;
+    }
+
+    public void setDirectories(List<Directory> directories) {
+        this.directories.clear();
+        this.directories.addAll(directories);
+        notifyDataSetChanged();
     }
 
     public void addDirectory(Directory directory) {
@@ -100,16 +109,37 @@ public class RecyclerPathAdapter extends RecyclerView.Adapter<RecyclerPathAdapte
             super(view);
             textViewName = view.findViewById(R.id.textViewName);
 
-            if (getAdapterPosition() < (directories.size())) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (listener != null) {
-                            listener.onClick(directories.get(getAdapterPosition()));
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        if (getAdapterPosition() == 0 && !directories.isEmpty()) {
+                            listener.onClick(null);
+                        }
+                        else if (directories.size() > getAdapterPosition()-1 &&
+                                 getAdapterPosition() > 0){
+
+                            Directory d = directories.get(getAdapterPosition()-1);
+                            listener.onClick(d);
+
+                            Iterator<Directory> it = directories.iterator();
+                            boolean b = false;
+
+                            do {
+                                if (b) {
+                                    it.next();
+                                    it.remove();
+                                }
+                                else if (it.next().get_id().equals(d.get_id())) {
+                                    b = true;
+                                }
+                            } while (it.hasNext());
+
+                            notifyDataSetChanged();
                         }
                     }
-                });
-            }
+                }
+            });
         }
     }
 

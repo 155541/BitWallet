@@ -11,14 +11,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +34,7 @@ import revolhope.splanes.com.bitwallet.helper.DialogHelper;
 import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.K;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogGenerateParams;
 
 public class AccountActivity extends AppCompatActivity {
 

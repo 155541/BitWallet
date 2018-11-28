@@ -26,6 +26,7 @@ import revolhope.splanes.com.bitwallet.db.DaoDirectory;
 import revolhope.splanes.com.bitwallet.helper.AppContract;
 import revolhope.splanes.com.bitwallet.helper.DialogHelper;
 import revolhope.splanes.com.bitwallet.model.Directory;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogFolder;
 
 public class MainActivity extends AppCompatActivity {
 

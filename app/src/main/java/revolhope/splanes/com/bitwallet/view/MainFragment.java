@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -27,6 +28,10 @@ import revolhope.splanes.com.bitwallet.helper.DialogHelper;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
 import revolhope.splanes.com.bitwallet.model.K;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogConfirmation;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogFolder;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogHolderOptions;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogMove;
 
 public class MainFragment extends Fragment
 {
@@ -35,7 +40,6 @@ public class MainFragment extends Fragment
     private RecyclerPathAdapter pathAdapter;
     private DaoDirectory daoDirectory;
     private DaoAccount daoAccount;
-    //RecyclerPathAdapter pathAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -72,8 +76,7 @@ public class MainFragment extends Fragment
         pathAdapter.setOnClickListener(new RecyclerPathAdapter.OnClickListener() {
             @Override
             public void onClick(Directory directory) {
-                currentDir = directory;
-                refreshContentRecyclerView();
+                setPath(directory);
             }
         });
         recyclerViewPath.setAdapter(pathAdapter);
@@ -448,7 +451,7 @@ public class MainFragment extends Fragment
         }
     }
 
-    RecyclerContentAdapter getContentAdapter() { return contentAdapter; }
+    public RecyclerContentAdapter getContentAdapter() { return contentAdapter; }
 
     public void dropData(boolean isDirectory, Object id) {
         try {
@@ -482,6 +485,40 @@ public class MainFragment extends Fragment
 
         return this.currentDir != null ? currentDir.get_id() : null;
 
+    }
+
+    private void setPath(Directory directory) {
+
+        if (directory == null) {
+            try {
+                daoDirectory.findRoot(new DaoCallbacks.Select<Directory>() {
+                    @Override
+                    public void onSelected(Directory[] selection) {
+                        if (selection != null && selection.length == 1) {
+                            currentDir = selection[0];
+                            if (getActivity() != null){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        pathAdapter.setDirectories(new ArrayList<Directory>());
+                                    }
+                                });
+                            }
+                            refreshContentRecyclerView();
+                        }
+                    }
+                });
+            }
+            catch (SQLException e) {
+                if (getContext() != null)
+                    DialogHelper.showInfo("SQL Error", e.getMessage(), getContext());
+                e.printStackTrace();
+            }
+        }
+        else {
+            currentDir = directory;
+            refreshContentRecyclerView();
+        }
     }
 
     private void refreshContentRecyclerView() {

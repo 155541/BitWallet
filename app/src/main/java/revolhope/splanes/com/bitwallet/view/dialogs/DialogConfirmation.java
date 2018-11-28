@@ -1,4 +1,4 @@
-package revolhope.splanes.com.bitwallet.view;
+package revolhope.splanes.com.bitwallet.view.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
