@@ -147,6 +147,8 @@ public class MainFragment extends Fragment
                                             }
                                         }
                                     });
+                                    dialogMove.getWindow().getAttributes().windowAnimations = 
+                                        R.style.DialogFromRightAnim;
                                     dialogMove.show(getFragmentManager(), "DialogMove");
                                     break;
 
@@ -161,13 +163,18 @@ public class MainFragment extends Fragment
                                             dropData(false, account.get_id());
                                         }
                                     });
+                                    dialogConfirmation.getWindow().getAttributes().windowAnimations = 
+                                        R.style.DialogFadeInOutAnim;
                                     dialogConfirmation.show(getFragmentManager(), "Confirm");
                                     break;
                             }
                         }
                     });
-                    if (getFragmentManager() != null)
+                    if (getFragmentManager() != null) {
+                        dialogHolderOption.getWindow().getAttributes().windowAnimations = 
+                            R.style.DialogFadeInOutAnim;
                         dialogHolderOptions.show(getFragmentManager(), "OptionDialog");
+                    }
                 }
             }
         });
@@ -269,6 +276,8 @@ public class MainFragment extends Fragment
                                             }
                                         }
                                     });
+                                    dialogFolder.getWindow().getAttributes().windowAnimations = 
+                                        R.sty
                                     dialogFolder.show(getFragmentManager(), "FolderDialog");
                                     break;
                                 case AppContract.ITEM_DROP:
@@ -294,6 +303,8 @@ public class MainFragment extends Fragment
                                                     Objects.requireNonNull(getContext()));
                     }
                     else {
+                        dialogHolderOption.getWindow().getAttributes().windowAnimations = 
+                            R.style.DialogFadeInOutAnim;
                         dialogHolderOptions.show(getFragmentManager(), "OptionDialog");
                     }
                 }
