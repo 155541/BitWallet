@@ -35,7 +35,7 @@
         <item name="android:windowExitAnimation">@anim/fadeout</item>
     </style>
 
-    <style name="DialogFromRight">
+    <style name="DialogFromRightAnim">
         <item name="android:windowEnterAnimation">@anim/slide_left</item>
         <item name="android:windowExitAnimation">@anim/slide_right</item>
     </style>
