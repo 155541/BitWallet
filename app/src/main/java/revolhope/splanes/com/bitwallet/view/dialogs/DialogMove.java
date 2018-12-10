@@ -86,7 +86,8 @@ public class DialogMove extends DialogFragment {
         spannable.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),
                 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
+                R.style.DialogFromRightAnim);
         builder.setTitle(spannable);
         builder.setView(view);
         builder.setPositiveButton("Move", new DialogInterface.OnClickListener() {

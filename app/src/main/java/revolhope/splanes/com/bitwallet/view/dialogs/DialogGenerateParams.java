@@ -37,7 +37,8 @@ public class DialogGenerateParams extends DialogFragment {
                                                              viewGroup, false);
             bindComponents(view);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
+                    R.style.DialogFromRightAnim);
 
             Spannable span = new SpannableString("Set password params");
             span.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),

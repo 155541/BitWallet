@@ -47,4 +47,9 @@ public abstract class RandomGenerator {
         return sb.toString();
     }
 
+
+    @Contract(pure = true)
+    public static String createToken() {
+        return create(MODE_SIMPLE, 12);
+    }
 }

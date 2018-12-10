@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 DialogFolder dialogFolder = new DialogFolder();
                 dialogFolder.isNew(true);
-                dialogFolder.getAttributes().windowAnimations = R.style.DialogFromBottomAnim
                 dialogFolder.show(getSupportFragmentManager(), "DialogFolder");
             }
         });

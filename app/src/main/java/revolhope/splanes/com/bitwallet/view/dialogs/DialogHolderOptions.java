@@ -34,7 +34,8 @@ public class DialogHolderOptions extends DialogFragment {
             items = new String[]{"Move", "Drop"};
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
+                R.style.DialogFadeInOutAnim);
 
         Spannable spannable = new SpannableString("Pick an option");
         spannable.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),

@@ -252,8 +252,6 @@ public class AccountActivity extends AppCompatActivity {
                         editText_Password.setText(pwd != null ? pwd : "Oops..Try again");
                     }
                 });
-                dialogGenerateParams.getWindow().getAttributes().windowAnimations = 
-                    R.style.DialogFromRightAnim;
                 dialogGenerateParams.show(getSupportFragmentManager(), "GenDialog");
             }
         });
