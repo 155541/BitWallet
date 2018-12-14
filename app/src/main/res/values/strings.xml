@@ -36,4 +36,6 @@
     <string name="hint_set_folder_name">Set folder name</string>
     <string name="slash">/</string>
     <string name="prompt_home">Home</string>
+    <string name="menu_action_search">Search</string>
+    <string name="menu_action_backup">Backup</string>
 </resources>

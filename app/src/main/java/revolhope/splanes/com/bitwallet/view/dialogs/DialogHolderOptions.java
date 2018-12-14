@@ -31,7 +31,7 @@ public class DialogHolderOptions extends DialogFragment {
             items = new String[]{"Move", "Update", "Drop"};
         }
         else {
-            items = new String[]{"Move", "Drop"};
+            items = new String[]{"BitWallet Web", "Move", "Drop"};
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
@@ -47,11 +47,12 @@ public class DialogHolderOptions extends DialogFragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 switch (i) {
                     case 0:
-                        pickedOption = AppContract.ITEM_MOVE;
+                        pickedOption = isDirectory ?
+                                AppContract.ITEM_MOVE : AppContract.ITEM_WEB;
                         break;
                     case 1:
                         pickedOption = isDirectory ?
-                                AppContract.ITEM_UPDATE : AppContract.ITEM_DROP;
+                                AppContract.ITEM_UPDATE : AppContract.ITEM_MOVE;
                         break;
                     case 2:
                         pickedOption = AppContract.ITEM_DROP;

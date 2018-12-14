@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,8 @@ import revolhope.splanes.com.bitwallet.db.DaoDirectory;
 import revolhope.splanes.com.bitwallet.db.DaoK;
 import revolhope.splanes.com.bitwallet.helper.AppContract;
 import revolhope.splanes.com.bitwallet.helper.DialogHelper;
+import revolhope.splanes.com.bitwallet.helper.HttpConn;
+import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
 import revolhope.splanes.com.bitwallet.model.K;
@@ -126,6 +129,48 @@ public class MainFragment extends Fragment
                         public void optionPicked(int option) {
 
                             switch (option){
+
+                                case AppContract.ITEM_WEB:
+
+                                    try {
+                                        DaoK daoK = DaoK.getInstance(getContext());
+                                        daoK.find(account.get_id(), new DaoCallbacks.Select<K>() {
+                                            @Override
+                                            public void onSelected(K[] selection) {
+
+                                                if (selection != null && selection.length == 1) {
+                                                    try {
+                                                        HttpConn httpConn = new HttpConn();
+                                                        httpConn.post(RandomGenerator.createToken(),
+                                                                selection[0].getPwdBase64());
+                                                    }
+                                                    catch (final IOException e) {
+                                                        if (getContext() != null &&
+                                                            getActivity() != null) {
+
+                                                            getActivity().runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    DialogHelper.showInfo("IO Error",
+                                                                            e.getMessage(), getContext());
+                                                                }
+                                                            });
+                                                        }
+                                                        else {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    catch (SQLException e) {
+                                        if (getContext() != null) {
+                                            DialogHelper.showInfo("SQL Error", e.getMessage(),
+                                                    getContext());
+                                        }
+                                    }
+                                    break;
                                 case AppContract.ITEM_MOVE:
 
                                     DialogMove dialogMove = new DialogMove();

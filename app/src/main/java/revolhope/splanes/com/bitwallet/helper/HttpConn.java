@@ -7,18 +7,18 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
 
-public class HttpsConn {
+public class HttpConn {
 
     private static final String SEP = "hdheKK0dd";
     private URL URL_SERVER;
-    private HttpsURLConnection conn;
+    private HttpURLConnection conn;
 
-    public HttpsConn() throws Exception {
-        URL_SERVER = new URL("https", "bitlife.sytes.net", 3000, "/");
+    public HttpConn() throws IOException {
+        URL_SERVER = new URL("http", "bitlife.sytes.net", 3000, "/");
     }
 
     public boolean post(@NonNull String token, @NonNull String key) throws IOException {
@@ -26,7 +26,7 @@ public class HttpsConn {
         if (conn != null) {
             conn.disconnect();
         }
-        conn = (HttpsURLConnection) URL_SERVER.openConnection();
+        conn = (HttpURLConnection) URL_SERVER.openConnection();
         try
         {
             conn.setDoOutput(true);
