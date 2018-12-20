@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class DialogGenerateParams extends DialogFragment {
             bindComponents(view);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
-                    R.style.DialogFromRightAnim);
+                    R.style.AppDialogStyle);
 
             Spannable span = new SpannableString("Set password params");
             span.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),

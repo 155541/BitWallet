@@ -23,7 +23,7 @@ public class DialogConfirmation extends DialogFragment {
 
         if (getContext() == null) return super.onCreateDialog(savedInstanceState);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.DialogFadeInOutAnim);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AppDialogStyle);
 
         Spannable spannable = new SpannableString("Delete " +
                                                          (isDirectory ? "directory" : "account"));

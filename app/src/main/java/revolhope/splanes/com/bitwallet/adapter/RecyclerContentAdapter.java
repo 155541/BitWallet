@@ -16,7 +16,6 @@ import revolhope.splanes.com.bitwallet.R;
 import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
-import revolhope.splanes.com.bitwallet.view.MainFragment;
 
 public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContentAdapter.Holder> {
 
@@ -26,8 +25,8 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     private List<Account> accounts = new ArrayList<>();;
     private List<Directory> directories = new ArrayList<>();;
 
-    private MainFragment.OnAccClick onClickAcc;
-    private MainFragment.OnDirClick onClickDir;
+    private OnAccClick onClickAcc;
+    private OnDirClick onClickDir;
 
     private Context context;
 
@@ -198,10 +197,10 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         holder.textView_Name.setText(d.getName());
     }
 
-    public void setOnClickAcc(MainFragment.OnAccClick onClickAcc) {
+    public void setOnClickAcc(OnAccClick onClickAcc) {
         this.onClickAcc = onClickAcc;
     }
-    public void setOnClickDir(MainFragment.OnDirClick onClickDir) {
+    public void setOnClickDir(OnDirClick onClickDir) {
         this.onClickDir = onClickDir;
     }
 
@@ -301,5 +300,19 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
                 }
             });
         }
+    }
+
+// ============================================================================================== //
+//                                          LISTENERS                                             //
+// ============================================================================================== //
+
+    public interface OnAccClick {
+        void onClick(Account account);
+        void onLongClick(Account account);
+    }
+
+    public interface OnDirClick {
+        void onClick(Directory directory);
+        void onLongClick(Directory directory);
     }
 }

@@ -5,5 +5,6 @@
     <color name="colorAccent">#FFC107</color>
     <!-- orig: ffd95b -->
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorDialogBackground">#B3FFFFFF</color>
 
 </resources>
