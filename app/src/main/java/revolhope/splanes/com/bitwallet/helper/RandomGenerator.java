@@ -19,25 +19,34 @@ public abstract class RandomGenerator {
     public static final int SIZE_128 = 717;
     public static final int SIZE_OTHER = 351;
 
-    private static final String simple = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>-_.:;=/&%$!";
-    private static final String symbols = "\"\'¡º¿?)(ñ·\\,ç+{}[]*€@#";
+    private static final String simple =
+            "-_.:=/&$!abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static final StringBuilder symbols =
+    new StringBuilder("\"\'¡º¿?)(ñ·\\,ç+{}[]*€@#");
 
     @NonNull
     private static String generateUniverse(boolean isComplex) {
-        String base = simple;
+        StringBuilder sbBase = new StringBuilder(simple);
         if (isComplex) {
-            base += symbols;
+            sbBase.append(symbols);
         }
-        int universeSize = base.length();
-        StringBuilder sb = new StringBuilder(universeSize);
-        long seed;
-        Random rand;
+
+        int universeSize = sbBase.length();
+        StringBuilder sbResult = new StringBuilder(universeSize);
+        int idx;
+
+        Random auxRand = new Random();
+        Random rand = new Random(auxRand.nextLong());
         for (int i = 0 ; i < universeSize ; i++) {
-            seed = (long) (System.currentTimeMillis() * Math.random());
-            rand = new Random(seed);
-            sb.append(base.charAt(rand.nextInt(universeSize-1)));
+            if (sbBase.length() <= 1)
+                idx = 0;
+            else
+                idx = rand.nextInt(sbBase.length()-1);
+            sbResult.append(sbBase.charAt(idx));
+            sbBase.deleteCharAt(idx);
         }
-        return sb.toString();
+        return sbResult.toString();
     }
 
     @Nullable

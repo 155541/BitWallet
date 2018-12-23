@@ -80,6 +80,8 @@ public class DialogGenerateParams extends DialogFragment {
 
         RadioButton rb_simple = view.findViewById(R.id.radioButton_simple);
         RadioButton rb_complex = view.findViewById(R.id.radioButton_complex);
+        rb_simple.setChecked(true);
+        mode = RandomGenerator.MODE_SIMPLE;
 
         View.OnClickListener listenerType = new View.OnClickListener() {
             @Override
