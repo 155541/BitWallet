@@ -3,6 +3,7 @@ package revolhope.splanes.com.bitwallet.view.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,14 +11,18 @@ import android.support.v4.app.DialogFragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import revolhope.splanes.com.bitwallet.R;
+import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.helper.RandomGenerator;
 
 public class DialogGenerateParams extends DialogFragment {
@@ -33,10 +38,12 @@ public class DialogGenerateParams extends DialogFragment {
 
         if (getContext() != null) {
             Activity activity = (Activity) getContext();
+            // Check if works (action: don't show keyboard if it doesn't called by user)
+            activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             ViewGroup viewGroup = activity.findViewById(android.R.id.content);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_generate_params,
                                                              viewGroup, false);
-            bindComponents(view);
+            bindComponents(view, getContext());
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
                     R.style.AppDialogStyle);
@@ -50,18 +57,12 @@ public class DialogGenerateParams extends DialogFragment {
             builder.setPositiveButton("Generate", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
-                    if (size != RandomGenerator.SIZE_8 && size != RandomGenerator.SIZE_16 &&
-                            size != RandomGenerator.SIZE_24 && size != RandomGenerator.SIZE_32 &&
-                            size != RandomGenerator.SIZE_64) {
-
+                    if (size == RandomGenerator.SIZE_OTHER ) {
                         String str = editText_sizeOther.getText().toString();
-
                         try { size = Integer.parseInt(str); }
                         catch (NumberFormatException e) { size = -1; }
                     }
                     if (callback != null) callback.getResult(mode, size);
-
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -75,19 +76,10 @@ public class DialogGenerateParams extends DialogFragment {
         else return super.onCreateDialog(savedInstanceState);
     }
 
-    public void bindComponents(@NonNull View view) {
-
+    public void bindComponents(@NonNull View view, @NonNull final Context context) {
 
         RadioButton rb_simple = view.findViewById(R.id.radioButton_simple);
         RadioButton rb_complex = view.findViewById(R.id.radioButton_complex);
-        RadioButton rb_size8 = view.findViewById(R.id.radioButton_size8);
-        RadioButton rb_size16 = view.findViewById(R.id.radioButton_size16);
-        RadioButton rb_size24 = view.findViewById(R.id.radioButton_size24);
-        RadioButton rb_size32 = view.findViewById(R.id.radioButton_size32);
-        RadioButton rb_size64 = view.findViewById(R.id.radioButton_size64);
-        RadioButton rb_sizeOther = view.findViewById(R.id.radioButton_sizeOther);
-        editText_sizeOther = view.findViewById(R.id.editText_otherSize);
-        editText_sizeOther.setEnabled(false);
 
         View.OnClickListener listenerType = new View.OnClickListener() {
             @Override
@@ -106,62 +98,32 @@ public class DialogGenerateParams extends DialogFragment {
             }
         };
 
-        View.OnClickListener listenerSize = new View.OnClickListener() {
-            @Override
-            public void onClick(@NonNull View view) {
-                boolean checked = ((RadioButton) view).isChecked();
-                switch(view.getId()) {
-                    case R.id.radioButton_size8:
-                        if (checked) {
-                            size = RandomGenerator.SIZE_8;
-                            editText_sizeOther.setEnabled(false);
-                        }
-                        else size = -1;
-                        break;
-                    case R.id.radioButton_size16:
-                        if (checked) {
-                            size = RandomGenerator.SIZE_16;
-                            editText_sizeOther.setEnabled(false);
-                        }
-                        else size = -1;
-                        break;
-                    case R.id.radioButton_size24:
-                        if (checked) {
-                            size = RandomGenerator.SIZE_24;
-                            editText_sizeOther.setEnabled(false);
-                        }
-                        else size = -1;
-                        break;
-                    case R.id.radioButton_size32:
-                        if (checked) {
-                            size = RandomGenerator.SIZE_32;
-                            editText_sizeOther.setEnabled(false);
-                        }
-                        else size = -1;
-                        break;
-                    case R.id.radioButton_size64:
-                        if (checked) {
-                            size = RandomGenerator.SIZE_64;
-                            editText_sizeOther.setEnabled(false);
-                        }
-                        else size = -1;
-                        break;
-                    case R.id.radioButton_sizeOther:
-                        editText_sizeOther.setEnabled(checked);
-                        if(!checked) size = -1;
-                        break;
-                }
-            }
-        };
-
         rb_simple.setOnClickListener(listenerType);
         rb_complex.setOnClickListener(listenerType);
-        rb_size8.setOnClickListener(listenerSize);
-        rb_size16.setOnClickListener(listenerSize);
-        rb_size24.setOnClickListener(listenerSize);
-        rb_size32.setOnClickListener(listenerSize);
-        rb_size64.setOnClickListener(listenerSize);
-        rb_sizeOther.setOnClickListener(listenerSize);
+        Spinner spinnerSize = view.findViewById(R.id.spinnerSize);
+        ArrayAdapter<CharSequence> spinSizeAdapter =
+                ArrayAdapter.createFromResource(context, R.array.ArraySpinnerContractSizes,
+                                                android.R.layout.simple_spinner_item);
+        spinnerSize.setAdapter(spinSizeAdapter);
+        spinnerSize.setSelection(0);
+        spinnerSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object o = parent.getItemAtPosition(position);
+                size = AppUtils.stringToConstant(o.toString());
+                if (size == RandomGenerator.SIZE_OTHER) {
+                    editText_sizeOther.setVisibility(View.VISIBLE);
+                }
+                else  {
+                    editText_sizeOther.setVisibility(View.GONE);
+                }
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+                size = RandomGenerator.SIZE_12;
+            }
+        });
+
+        editText_sizeOther = view.findViewById(R.id.editText_otherSize);
+        editText_sizeOther.setVisibility(View.GONE);
     }
 
     public void setCallback(DialogCallback callback) {

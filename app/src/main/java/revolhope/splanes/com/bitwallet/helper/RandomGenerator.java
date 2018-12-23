@@ -1,55 +1,74 @@
 package revolhope.splanes.com.bitwallet.helper;
 
+import android.support.annotation.NonNull;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class RandomGenerator {
+import java.util.Random;
 
+public abstract class RandomGenerator {
     public static final int MODE_SIMPLE = 110;
     public static final int MODE_COMPLEX = 146;
 
-    public static final int SIZE_8 = 607;
+    public static final int SIZE_12 = 607;
     public static final int SIZE_16 = 325;
     public static final int SIZE_24 = 78;
     public static final int SIZE_32 = 970;
     public static final int SIZE_64 = 233;
+    public static final int SIZE_128 = 717;
+    public static final int SIZE_OTHER = 351;
 
-    private static final String simpleUniverse =
-            "aTidBxL6N49z0pqWXuJ3vklAKw7EFGrPbHjReQo8CcS1htOfIsYZMm5ygDnUV2";
+    private static final String simple = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>-_.:;=/&%$!";
+    private static final String symbols = "\"\'¡º¿?)(ñ·\\,ç+{}[]*€@#";
 
-    private static final String complexUniverse = simpleUniverse +
-            "$#%}|=!¡·)'-_?/&.,:[;¿](@{";
+    @NonNull
+    private static String generateUniverse(boolean isComplex) {
+        String base = simple;
+        if (isComplex) {
+            base += symbols;
+        }
+        int universeSize = base.length();
+        StringBuilder sb = new StringBuilder(universeSize);
+        long seed;
+        Random rand;
+        for (int i = 0 ; i < universeSize ; i++) {
+            seed = (long) (System.currentTimeMillis() * Math.random());
+            rand = new Random(seed);
+            sb.append(base.charAt(rand.nextInt(universeSize-1)));
+        }
+        return sb.toString();
+    }
 
     @Nullable
     @Contract(pure = true)
     public static String create(int mode, int size) {
-
-        if (mode != MODE_SIMPLE && mode != MODE_COMPLEX) return null;
-        String u = mode == MODE_SIMPLE ? simpleUniverse : complexUniverse;
         int s;
         switch (size) {
-            case SIZE_8:    s = 8; break;
-            case SIZE_16:   s = 16; break;
-            case SIZE_24:   s = 24; break;
-            case SIZE_32:   s = 32; break;
-            case SIZE_64:   s = 64; break;
-            case -1:        return null;
-            default:        s = size;
+            case SIZE_12:    s = 12; break;
+            case SIZE_16:    s = 16; break;
+            case SIZE_24:    s = 24; break;
+            case SIZE_32:    s = 32; break;
+            case SIZE_64:    s = 64; break;
+            case SIZE_128:   s = 128; break;
+            case -1:         return null;
+            default:         s = size;
         }
+        String universe = generateUniverse(mode == MODE_COMPLEX);
         StringBuilder sb = new StringBuilder(s);
-        int universeSize = u.length();
-
+        int universeSize = universe.length();
+        long seed;
+        Random rand;
         for (int i = 0 ; i < s ; i++) {
-            double index = Math.floor(Math.random() * (universeSize-1)) + 1;
-            sb.append(u.charAt((int)index));
+            seed = (long) (System.currentTimeMillis() * Math.random());
+            rand = new Random(seed);
+            sb.append(universe.charAt(rand.nextInt(universeSize-1)));
         }
-
         return sb.toString();
     }
 
-
     @Contract(pure = true)
     public static String createToken() {
-        return create(MODE_SIMPLE, 12);
+        return create(MODE_SIMPLE, SIZE_12);
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="ArraySpinnerContractSizes">
+        <item>"12 chars"</item>
+        <item>"16 chars"</item>
+        <item>"24 chars"</item>
+        <item>"32 chars"</item>
+        <item>"64 chars"</item>
+        <item>"128 chars"</item>
+    </array>
+</resources>

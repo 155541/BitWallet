@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -50,6 +51,8 @@ public class AccountActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
+        // #Note: code below is to make sure keyboard just opens when user press
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         final Account account;
 
@@ -65,12 +68,9 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         if (getIntent().getExtras() != null) {
-
             if (getIntent().hasExtra(AppContract.EXTRA_EDIT_ACC) && k != null) {
-
                 account = (Account) getIntent().getExtras().
                         getSerializable(AppContract.EXTRA_EDIT_ACC);
-
                 if (account == null) return;
                 else isNew = false;
             }
@@ -79,7 +79,6 @@ public class AccountActivity extends AppCompatActivity {
                 k = null;
                 isNew = true;
             }
-
             parentId = getIntent().getExtras().getLong(AppContract.EXTRA_CURRENT_DIR);
         }
         else {
