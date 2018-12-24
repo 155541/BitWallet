@@ -67,6 +67,7 @@ public final class AppUtils {
             case "32 chars": return RandomGenerator.SIZE_32;
             case "64 chars": return RandomGenerator.SIZE_64;
             case "128 chars": return RandomGenerator.SIZE_128;
+            case "Other..." : return RandomGenerator.SIZE_OTHER;
             default: return -1;
         }
     }

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.KeyStore;
+import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -113,6 +114,11 @@ public final class Cryptography {
         ks.load(null);
     }
 
+    public String sha256(@NonNull String strData) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] raw = md.digest(AppUtils.toBase64(strData.getBytes()));
+        return AppUtils.toStringBase64(raw);
+    }
 
 
 

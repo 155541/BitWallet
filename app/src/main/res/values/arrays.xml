@@ -7,5 +7,6 @@
         <item>"32 chars"</item>
         <item>"64 chars"</item>
         <item>"128 chars"</item>
+        <item>"Other..."</item>
     </array>
 </resources>
