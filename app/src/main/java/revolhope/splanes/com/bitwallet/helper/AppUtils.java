@@ -1,7 +1,6 @@
 package revolhope.splanes.com.bitwallet.helper;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Base64;
 
 import org.jetbrains.annotations.Contract;
@@ -11,9 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
-
-import revolhope.splanes.com.bitwallet.R;
 
 public final class AppUtils {
 

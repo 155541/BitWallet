@@ -1,21 +1,58 @@
 package revolhope.splanes.com.bitwallet.helper;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 
 import revolhope.splanes.com.bitwallet.R;
 
-public class DialogHelper {
-   
+public class DialogHelper extends DialogFragment {
+
+    public static final String TAG = "DialogHelper";
     private AlertDialog.Builder builder;
-    
+
+    // NEW
+    public interface DialogHelperListener {
+        void onDialogClick();
+    }
+
+    public static void showInfo(@NonNull Context context,
+                                @Nullable String title,
+                                @NonNull String body,
+                                @Nullable final DialogHelperListener listener) {
+
+        Drawable icon = context.getDrawable(R.drawable.ic_dialog_info);
+        Spannable span = new SpannableString(title != null ? title : "Information");
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,
+                R.style.AppDialogStyle);
+
+        span.setSpan(new ForegroundColorSpan(context.getColor(R.color.colorPrimaryDark)),
+                0, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setTitle(span);
+        if (icon != null) {
+            icon.setAlpha(85);
+            icon.setTint(context.getColor(R.color.colorPrimary));
+            builder.setIcon(icon);
+        }
+        builder.setMessage(body);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (listener != null) listener.onDialogClick();
+            }
+        });
+        builder.create().show();
+    }
+
+/*
     public DialogHelper(@NonNull Context context) {
         builder = new AlertDialog.Builder(context);
     }
@@ -57,7 +94,6 @@ public class DialogHelper {
         dialog.show();
     }
 
-
     public static void showInfo(@NonNull String title, @NonNull String message, @NonNull Context context) {
         DialogHelper help = new DialogHelper(context);
         help.setStrings(title, message);
@@ -85,5 +121,5 @@ public class DialogHelper {
         AlertDialog d = help.createDialog();
         d.show();
         return d;
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 package revolhope.splanes.com.bitwallet.db;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.sql.SQLException;
 import revolhope.splanes.com.bitwallet.model.Directory;

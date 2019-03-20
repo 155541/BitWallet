@@ -1,14 +1,17 @@
 package revolhope.splanes.com.bitwallet.view;
 
 import android.Manifest;
-import android.app.KeyguardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -47,7 +50,23 @@ public class AuthActivity extends AppCompatActivity {
                         new FingerprintManager.CryptoObject(FingerprintHelper.getFingerprintCipher());
 
                 FingerprintHelper.AuthCallback callback =
-                        new FingerprintHelper.AuthCallback(this);
+                        new FingerprintHelper.AuthCallback(this,
+                                new FingerprintHelper.AuthCallback.OnAuthListener() {
+                            @Override
+                            public void onAuthenticate(boolean isSucceed, String... errorCodes) {
+                                if (isSucceed) {
+                                    Intent i = new Intent(getApplicationContext(),
+                                            MainActivity.class);
+                                    startActivity(i);
+                                    Vibrator vibrator =
+                                            (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    if (vibrator != null) {
+                                        vibrator.vibrate(VibrationEffect.createOneShot(200,
+                                                VibrationEffect.DEFAULT_AMPLITUDE));
+                                    }
+                                }
+                            }
+                        });
 
                 callback.startAuth(fingerprintManager, cryptoObj);
             }

@@ -6,8 +6,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -38,7 +38,6 @@ public class DialogGenerateParams extends DialogFragment {
 
         if (getContext() != null) {
             Activity activity = (Activity) getContext();
-            // Check if works (action: don't show keyboard if it doesn't called by user)
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             ViewGroup viewGroup = activity.findViewById(android.R.id.content);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_generate_params,

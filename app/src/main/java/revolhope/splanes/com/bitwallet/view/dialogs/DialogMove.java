@@ -6,17 +6,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.sql.SQLException;
@@ -87,7 +86,7 @@ public class DialogMove extends DialogFragment {
                 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),
-                R.style.DialogFromRightAnim);
+                R.style.AppDialogStyle);
         builder.setTitle(spannable);
         builder.setView(view);
         builder.setPositiveButton("Move", new DialogInterface.OnClickListener() {

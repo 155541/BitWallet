@@ -6,20 +6,22 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -39,8 +41,6 @@ import revolhope.splanes.com.bitwallet.view.dialogs.DialogGenerateParams;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private EditText editText_Account;
-    private EditText editText_Password;
     private long parentId;
     private int insertControl;
 
@@ -82,40 +82,44 @@ public class AccountActivity extends AppCompatActivity {
             parentId = getIntent().getExtras().getLong(AppContract.EXTRA_CURRENT_DIR);
         }
         else {
-            DialogHelper.showInfo("Error",
+            DialogHelper.showInfo(this,"Error",
                                   "Oops.. something went wrong. Try it again",
-                                  this);
-            // That below is done by prevent a NullPointerException
+                                  null);
+            // That below is done to prevent a NullPointerException
             account = new Account();
             k = null;
         }
 
         toolbar.setTitle(isNew ? "New Account" : "Update Account");
 
-        editText_Account = findViewById(R.id.editText_Account);
-        editText_Password = findViewById(R.id.editText_Password);
-        final EditText editText_URL = findViewById(R.id.editText_URL);
-        final EditText editText_User = findViewById(R.id.editText_User);
-        Button btGenerate = findViewById(R.id.btGenerate);
-        final CheckBox checkBox_Expire = findViewById(R.id.checkBox_Expire);
-        final TextView textView_ExpireDate = findViewById(R.id.textView_ExpireDate);
-        final EditText editText_Brief = findViewById(R.id.editText_Brief);
-        Button btDone = findViewById(R.id.btDone);
+        TextInputEditText editText_Id = findViewById(R.id.editText_Id);
+        final TextInputEditText editText_Account = findViewById(R.id.editText_Account);
+        final TextInputEditText editText_URL = findViewById(R.id.editText_URL);
+        final TextInputEditText editText_User = findViewById(R.id.editText_User);
+        final TextInputEditText editText_Password = findViewById(R.id.editText_Password);
+        ImageView imageViewCopy = findViewById(R.id.iv_copy);
+        final TextInputEditText editText_Brief = findViewById(R.id.editText_Brief);
+        final TextInputEditText editText_ExpirationDate = findViewById(R.id.editText_ExpirationDate);
+        final SwitchCompat switchExpirationDate = findViewById(R.id.switch_ExpirationDate);
+        MaterialButton btGenerate = findViewById(R.id.btGenerate);
+        MaterialButton btDone = findViewById(R.id.btDone);
 
         btDone.setText(isNew ? "Create" : "Update");
 
-        TextView textView_Id = findViewById(R.id.textView_Id);
-        textView_Id.setText(account.get_id());
-
-        // TODO: Delete if doesn't works
-        textView_Id.requestFocus();
-
+        editText_Id.setText(account.get_id());
         if (!isNew) {
 
-            ImageView ivCopy = findViewById(R.id.iv_copy);
-            ivCopy.setVisibility(View.VISIBLE);
+            editText_Account.setText(account.getAccount());
+            editText_URL.setText(account.getUrl() == null ? "" : account.getUrl());
+            editText_User.setText(account.getUser() == null ? "" : account.getUser());
+            editText_Brief.setText(account.getBrief() == null ? "" : account.getBrief());
+            switchExpirationDate.setChecked(account.isExpire());
+            editText_ExpirationDate.setText(account.getDateExpire() == null ||
+                    account.getDateExpire() == 0 ?
+                    "" : AppUtils.format("dd/MM/yyyy", account.getDateExpire()));
 
-            ivCopy.setOnClickListener(new View.OnClickListener() {
+            imageViewCopy.setVisibility(View.VISIBLE);
+            imageViewCopy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ClipboardManager clipboard =
@@ -129,18 +133,7 @@ public class AccountActivity extends AppCompatActivity {
                 }
             });
 
-            editText_Account.setText(account.getAccount());
-            editText_URL.setText(account.getUrl() == null ? "" : account.getUrl());
-            editText_User.setText(account.getUser() == null ? "" : account.getUser());
-            editText_Brief.setText(account.getBrief() == null ? "" : account.getBrief());
-            checkBox_Expire.setChecked(account.isExpire());
-            textView_ExpireDate.setText(account.getDateExpire() == null ||
-                                        account.getDateExpire() == 0 ?
-                                        "" : "Expires on:" + AppUtils.format("dd/MM/yyyy",
-                                                                account.getDateExpire()));
-
             try {
-
                 Cryptography cryptography = new Cryptography();
                 byte[] bytes = cryptography.decrypt(AppUtils.fromStringBase64(k.getPwdBase64()),
                                      k, account.get_id());
@@ -153,13 +146,14 @@ public class AccountActivity extends AppCompatActivity {
                     editText_Password.setLayoutParams(params);
                 }
                 else {
-                    DialogHelper.showInfo("Decryption error",
+                    DialogHelper.showInfo(this,"Decryption error",
                                           "Something went wrong when decrypting",
-                                          this);
+                                          null);
                 }
             }
             catch (Exception e) {
-                DialogHelper.showInfo("Decryption error", e.getMessage(), this);
+                DialogHelper.showInfo(this,"Decryption error", e.getMessage(),
+                        null);
             }
         }
 
@@ -176,10 +170,8 @@ public class AccountActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                textView_ExpireDate.setText(
-                                        String.format("Expires on: %s",AppUtils.format(
-                                                                "dd/MM/yyyy",
-                                                                 cal.getTimeInMillis())));
+                                editText_ExpirationDate.setText(
+                                        AppUtils.format("dd/MM/yyyy", cal.getTimeInMillis()));
                             }
                         });
                     }
@@ -188,11 +180,14 @@ public class AccountActivity extends AppCompatActivity {
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH));
 
-        checkBox_Expire.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchExpirationDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     dialog.show();
+                }
+                else {
+                    editText_ExpirationDate.setText("");
                 }
             }
         });
@@ -201,20 +196,28 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (checkInputs()) {
+                Editable editableAccount = editText_Account.getText();
+                Editable editablePwd = editText_Password.getText();
+
+                if (editableAccount != null && !editableAccount.toString().isEmpty() &&
+                        editablePwd != null && !editablePwd.toString().isEmpty()) {
 
                     account.setParent(parentId);
-                    account.setAccount(editText_Account.getText().toString());
-                    account.setUser(editText_User.getText().toString());
-                    account.setUrl(editText_URL.getText().toString());
-                    account.setBrief(editText_Brief.getText().toString());
+                    account.setAccount(editableAccount.toString());
+                    account.setUser(editText_User.getText() != null ?
+                            editText_User.getText().toString() : "");
+                    account.setUrl(editText_URL.getText() != null ?
+                            editText_URL.getText().toString() : "");
+                    account.setBrief(editText_Brief.getText() != null ?
+                            editText_Brief.getText().toString() : "");
                     account.setDateCreate(AppUtils.timestamp());
                     account.setDateUpdate(null);
 
-                    if (checkBox_Expire.isChecked()) {
+                    if (switchExpirationDate.isChecked() &&
+                        editText_ExpirationDate.getText() != null) {
 
                         Long expire = AppUtils.toMillis("dd/MM/yyyy",
-                                textView_ExpireDate.getText().toString());
+                                editText_ExpirationDate.getText().toString());
 
                         account.setDateExpire(expire);
                         account.setExpire(true);
@@ -228,13 +231,14 @@ public class AccountActivity extends AppCompatActivity {
                         account.setExpire(false);
                     }
 
-                    processAccount(account, editText_Password.getText().toString());
+                    processAccount(account, editablePwd.toString());
 
                 }
                 else {
-                    DialogHelper.showInfo("Fields are wrong",
+                    DialogHelper.showInfo(getApplicationContext(),
+                                          "Fields are wrong",
                                           "Account name and Password fields are mandatory",
-                                           getApplicationContext());
+                                           null);
                 }
             }
         });
@@ -291,9 +295,9 @@ public class AccountActivity extends AppCompatActivity {
                     }, new K[]{k});
                 }
                 else {
-                    DialogHelper.showInfo("Encryption error",
+                    DialogHelper.showInfo(this,"Encryption error",
                                           "Something went wrong when encrypting...",
-                                          this);
+                                          null);
                 }
             }
             else {
@@ -378,12 +382,6 @@ public class AccountActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private boolean checkInputs() {
-
-        return !editText_Account.getText().toString().isEmpty() &&
-               !editText_Password.getText().toString().isEmpty();
     }
 
     static void setK(K k) {

@@ -7,8 +7,11 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +32,15 @@ public class AppDatabase extends SQLiteOpenHelper {
     private static final String DB_NAME = "BitWallet-db";
     private static int DB_VERSION = 1;
 
-    private static AppDatabase instance;
-
-    static synchronized AppDatabase getInstance(@NonNull Context context)
-    {
-        if (instance == null)
-        {
-            instance = new AppDatabase(context.getApplicationContext());
-        }
-        return instance;
-    }
-
     private AppDatabase(@NonNull Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    static AppDatabase getInstance(Context context) {
+        return new AppDatabase(context);
     }
 
 // ===============================================================================================//
@@ -1172,18 +1170,14 @@ public class AppDatabase extends SQLiteOpenHelper {
                         int tLength;
                         Long deadline;
                         do {
-
                             _id = c.getLong(c.getColumnIndex(KContract.COLUMN_ID));
                             accId = c.getString(c.getColumnIndex(KContract.COLUMN_ACC_ID));
                             cryptoPwd = c.getBlob(c.getColumnIndex(KContract.COLUMN_CRYPTO_PWD));
                             iv = c.getBlob(c.getColumnIndex(KContract.COLUMN_PARAM_IV));
                             tLength = c.getInt(c.getColumnIndex(KContract.COLUMN_PARAM_TLENGTH));
                             deadline = c.getLong(c.getColumnIndex(KContract.COLUMN_DEADLINE));
-
-
                             list.add(new K(_id, accId, AppUtils.toStringBase64(cryptoPwd),
                                     new GCMParameterSpec(tLength, iv), deadline));
-
                         } while(c.moveToNext());
 
                         callback.onSelected(list.toArray(new K[0]));
@@ -1223,7 +1217,6 @@ public class AppDatabase extends SQLiteOpenHelper {
             {
                 ContentValues values = new ContentValues();
                 List<K> result = new ArrayList<>();
-
                 for (K k : ks)
                 {
                     values.clear();
@@ -1232,8 +1225,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                     values.put(KContract.COLUMN_PARAM_IV, k.getSpec().getIV());
                     values.put(KContract.COLUMN_PARAM_TLENGTH, k.getSpec().getTLen());
                     values.put(KContract.COLUMN_DEADLINE, k.getDeadline());
-
-
                     long id = db.insert(KContract.TABLE, null, values);
                     if (id != -1)
                     {

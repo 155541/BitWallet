@@ -1,6 +1,6 @@
 package revolhope.splanes.com.bitwallet.helper;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;

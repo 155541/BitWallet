@@ -5,8 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -37,7 +37,7 @@ public class DialogFolder extends DialogFragment {
                                                                   viewGroup, false);
             final EditText editText_folderName = view.findViewById(R.id.editText_folderName);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.DialogFromBottomAnim);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AppDialogStyle);
             Spannable spannable = new SpannableString(isNew ? "New folder" : "Update folder");
             spannable.setSpan(new ForegroundColorSpan(getContext().getColor(R.color.colorPrimaryDark)),
                     0,spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

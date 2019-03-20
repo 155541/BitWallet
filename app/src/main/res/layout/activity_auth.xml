@@ -9,75 +9,91 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:background="@color/colorAppIconBackground"
+        android:padding="4dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_weight="1"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/app_name">
+        <ImageView
+            android:id="@+id/imageView_brand"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_app_brand"
+            android:tint="@color/colorPrimary"
+            tools:ignore="ContentDescription" />
 
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        <TextView
+            android:id="@+id/textViewBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/app_name"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/colorAccent"
+            android:textSize="26sp"
+            android:typeface="serif"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView_brand" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="24dp"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/prompt_set_pattern_or_fingerprint"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
             android:typeface="serif"
+            app:layout_constraintBottom_toTopOf="@+id/imageView_pattern12"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/imageView_pattern22"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginEnd="64dp"
-            android:layout_marginBottom="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="8dp"
+            android:tint="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBrand"
             app:srcCompat="@drawable/ic_pattern"
+            android:elevation="6dp"
+            android:alpha=".85"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern23"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginBottom="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="8dp"
+            android:tint="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintStart_toEndOf="@+id/imageView_pattern22"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBrand"
             app:srcCompat="@drawable/ic_pattern"
             tools:ignore="ContentDescription" />
 
@@ -85,12 +101,13 @@
             android:id="@+id/imageView_pattern21"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginEnd="64dp"
-            android:layout_marginBottom="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="8dp"
+            android:tint="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toStartOf="@+id/imageView_pattern22"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBrand"
             app:srcCompat="@drawable/ic_pattern"
             tools:ignore="ContentDescription" />
 
@@ -98,70 +115,76 @@
             android:id="@+id/imageView_pattern11"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="64dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="48dp"
             app:layout_constraintBottom_toTopOf="@+id/imageView_pattern21"
             app:layout_constraintEnd_toStartOf="@+id/imageView_pattern12"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern12"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginEnd="64dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="48dp"
             app:layout_constraintBottom_toTopOf="@+id/imageView_pattern22"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern13"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginBottom="48dp"
             app:layout_constraintBottom_toTopOf="@+id/imageView_pattern23"
             app:layout_constraintStart_toEndOf="@+id/imageView_pattern12"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern31"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginEnd="64dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="48dp"
             app:layout_constraintEnd_toStartOf="@+id/imageView_pattern32"
             app:layout_constraintTop_toBottomOf="@+id/imageView_pattern21"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern32"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginEnd="64dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_pattern22"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView_pattern33"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="48dp"
             app:layout_constraintStart_toEndOf="@+id/imageView_pattern32"
             app:layout_constraintTop_toBottomOf="@+id/imageView_pattern22"
             app:srcCompat="@drawable/ic_pattern"
+            android:tint="@color/colorWhite"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -170,14 +193,14 @@
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="32dp"
-            android:tint="@color/colorPrimaryDark"
+            android:layout_marginBottom="8dp"
+            android:tint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_fingerprint"
             tools:ignore="ContentDescription" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

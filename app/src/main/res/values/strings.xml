@@ -1,6 +1,25 @@
 <resources>
     <string name="app_name">BitWallet</string>
+
+
+
+    <!-- ACTIVITY CREATE / EDIT ACCOUNT -->
     <string name="activity_create_title">New Password</string>
+    <string name="hint_account">Account</string>
+    <string name="hint_id">Identification</string>
+    <string name="hint_url">Web page</string>
+    <string name="hint_user">User name</string>
+    <string name="hint_pwd">Password</string>
+    <string name="hint_brief">Description</string>
+    <string name="hint_expiration_date">Expiration date</string>
+    <string name="help_required">Required</string>
+    <string name="help_optional">Optional</string>
+    <string name="help_optional_recommended">Optional, recommended</string>
+    <string name="switch_expire">Expiration date</string>
+
+
+
+
 
 
     <string name="action_settings">Settings</string>
@@ -19,11 +38,9 @@
     <string name="hint_mandatory">Mandatory</string>
     <string name="hint_optional">Optional</string>
     <string name="hint_optional_recommended">Optional, recommended</string>
-    <string name="prompt_set_pattern_or_fingerprint">
-        Welcome to BitWallet\n\nSet pattern or use fingerprint
-    </string>
-    <string name="prompt_complexity">Complexity</string>
-    <string name="prompt_length">Length</string>
+    <string name="prompt_set_pattern_or_fingerprint">Set pattern or use fingerprint</string>
+    <string name="prompt_complexity"><u>Complexity:</u></string>
+    <string name="prompt_length"><u>Length:</u></string>
     <string name="prompt_simple_characters_amp_numbers"><![CDATA[Simple (Characters & numbers)]]></string>
     <string name="prompt_complex_symbols_included">Complex (Symbols included)</string>
     <string name="prompt__8_characters">8 Characters</string>
@@ -38,4 +55,13 @@
     <string name="prompt_home">Home</string>
     <string name="menu_action_search">Search</string>
     <string name="menu_action_backup">Backup</string>
+    <string name="prompt_number_of_uses"><u>Num. of uses</u></string>
+    <string name="radiobutton_lifetime_1">Today</string>
+    <string name="radiobutton_lifetime_2">Two days</string>
+    <string name="radiobutton_lifetime_5">5 days (not recommended)</string>
+    <string name="prompt_lifetime"><u>Lifetime:</u></string>
+    <string name="prompt_move">Move</string>
+    <string name="prompt_delete">Delete</string>
+    <string name="prompt_bitwallet">BitWallet Web</string>
+    <string name="prompt_update">Update</string>
 </resources>

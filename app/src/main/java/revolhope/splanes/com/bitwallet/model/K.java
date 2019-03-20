@@ -1,6 +1,6 @@
 package revolhope.splanes.com.bitwallet.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 

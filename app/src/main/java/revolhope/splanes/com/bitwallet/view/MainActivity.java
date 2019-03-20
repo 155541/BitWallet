@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +40,8 @@ import revolhope.splanes.com.bitwallet.view.dialogs.DialogConfirmation;
 import revolhope.splanes.com.bitwallet.view.dialogs.DialogFolder;
 import revolhope.splanes.com.bitwallet.view.dialogs.DialogHolderOptions;
 import revolhope.splanes.com.bitwallet.view.dialogs.DialogMove;
+import revolhope.splanes.com.bitwallet.view.dialogs.DialogToken;
+import revolhope.splanes.com.bitwallet.view.modals.ModalHolderOptions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private DaoDirectory daoDirectory;
     private DaoAccount daoAccount;
 
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//                                      Override methods
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +65,31 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        if(getSupportActionBar() != null) {
+            //getSupportActionBar().setLogo(R.drawable.ic_app_brand);
+            //getSupportActionBar().setDisplayUseLogoEnabled(true);
+            //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_USE_LOGO);
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
         daoDirectory = DaoDirectory.getInstance(this);
         daoAccount = DaoAccount.getInstance(this);
 
         final RecyclerView recyclerViewContent = findViewById(R.id.recyclerViewContent);
-        RecyclerView recyclerViewPath = findViewById(R.id.recyclerViewPath);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3,
+                LinearLayoutManager.VERTICAL, false);
+        contentAdapter = new RecyclerContentAdapter(this);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (contentAdapter.getItemViewType(position) !=
+                    RecyclerContentAdapter.TYPE_DIR)
+                     return 1; //  TODO: CHANGE!
+                else return 1;
+            }
+        });
 
-        recyclerViewContent.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView recyclerViewPath = findViewById(R.id.recyclerViewPath);
+        recyclerViewContent.setLayoutManager(gridLayoutManager);
         recyclerViewPath.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL,false));
 
@@ -78,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerViewPath.setAdapter(pathAdapter);
 
-        contentAdapter = new RecyclerContentAdapter(this);
         contentAdapter.setOnClickAcc(new RecyclerContentAdapter.OnAccClick() {
             @Override
             public void onClick(final Account account) {
@@ -104,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            DialogHelper.showInfo("SQL Error", e.getMessage(), context);
+                            DialogHelper.showInfo(context,"SQL Error", e.getMessage(),
+                                    null);
                         }
                     });
                 }
@@ -114,9 +138,87 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(final Account account) {
 
                 vibrate();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                if (fragmentManager != null) {
 
-                if (getSupportFragmentManager() != null) {
-                    DialogHolderOptions dialogHolderOptions = new DialogHolderOptions();
+                    final ModalHolderOptions modalHolderOptions = new ModalHolderOptions();
+
+                    ModalHolderOptions.OnModalOptionPicked onModalOptionPicked =
+                            new ModalHolderOptions.OnModalOptionPicked() {
+                        @Override
+                        public void optionPicked(int option) {
+                            switch (option){
+
+                                case AppContract.ITEM_WEB:
+                                    modalHolderOptions.dismiss();
+                                    DialogToken dialogToken = new DialogToken();
+                                    Bundle args = new Bundle();
+                                    args.putSerializable(DialogToken.ARG0,
+                                            new DialogToken.OnSendAuthSucceeded() {
+                                                @Override
+                                                public void onSendAuthSucceeded(int uses, long deadLine) {
+                                                    retrieveAndPost(account.get_id(), uses, deadLine);
+                                                }
+                                            });
+                                    dialogToken.setArguments(args);
+                                    dialogToken.show(getSupportFragmentManager(), "DialogToken");
+                                    break;
+                                case AppContract.ITEM_MOVE:
+                                    modalHolderOptions.dismiss();
+                                    DialogMove dialogMove = new DialogMove();
+                                    dialogMove.setName(account.getAccount());
+                                    dialogMove.setListener(new DialogMove.OnMoveListener() {
+                                        @Override
+                                        public void onMove(long newParent) {
+                                            account.setParent(newParent);
+                                            try {
+                                                daoAccount.update(new DaoCallbacks.Update<Account>() {
+                                                    @Override
+                                                    public void onUpdated(Account[] results) {
+                                                        refreshContentRecyclerView();
+                                                    }
+                                                }, new Account[] {account});
+                                            }
+                                            catch (SQLException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    dialogMove.show(getSupportFragmentManager(), "DialogMove");
+                                    break;
+
+                                case AppContract.ITEM_DROP:
+                                    modalHolderOptions.dismiss();
+                                    DialogConfirmation dialogConfirmation = new DialogConfirmation();
+                                    dialogConfirmation.isDirectory(false);
+                                    dialogConfirmation.setListener(
+                                            new DialogConfirmation.OnConfirmListener() {
+                                                @Override
+                                                public void onConfirm() {
+                                                    dropData(false, account.get_id());
+                                                }
+                                            });
+                                    dialogConfirmation.show(getSupportFragmentManager(),
+                                            "Confirm");
+                                    break;
+                            }
+                        }
+                    };
+
+                    try {
+                        Bundle arguments = new Bundle();
+                        arguments.putBoolean(ModalHolderOptions.ARG0, true);
+                        arguments.putSerializable(ModalHolderOptions.ARG1, onModalOptionPicked);
+                        modalHolderOptions.setArguments(arguments);
+                        modalHolderOptions.show(fragmentManager, ModalHolderOptions.TAG);
+                    }
+                    catch (Exception e) {
+                        // TODO: Change!
+                        e.printStackTrace();
+                    }
+
+
+                    /*final DialogHolderOptions dialogHolderOptions = new DialogHolderOptions();
                     dialogHolderOptions.isDirectory(false);
                     dialogHolderOptions.setCallback(new DialogHolderOptions.OnOptionPicked() {
                         @Override
@@ -126,7 +228,11 @@ public class MainActivity extends AppCompatActivity {
 
                                 case AppContract.ITEM_WEB:
 
-                                    try {
+                                    dialogHolderOptions.dismiss();
+                                    DialogToken dialogToken = new DialogToken();
+                                    dialogToken.show(getSupportFragmentManager(), "DialogToken");
+
+                                    *//*try {
                                         DaoK daoK = DaoK.getInstance(context);
                                         daoK.find(account.get_id(), new DaoCallbacks.Select<K>() {
                                             @Override
@@ -134,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                 if (selection != null && selection.length == 1) {
                                                     try {
-                                                        HttpConn httpConn = new HttpConn();
+                                                        HttpConn httpConn = new HttpConn(context);
                                                         httpConn.post(RandomGenerator.createToken(),
                                                                 selection[0].getPwdBase64());
                                                     }
@@ -161,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                                                         context);
                                             }
                                         });
-                                    }
+                                    }*//*
                                     break;
                                 case AppContract.ITEM_MOVE:
 
@@ -206,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                     if (getSupportFragmentManager() != null) {
                         dialogHolderOptions.show(getSupportFragmentManager(), "OptionDialog");
-                    }
+                    }*/
                 }
             }
         });
@@ -284,8 +390,8 @@ public class MainActivity extends AppCompatActivity {
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        DialogHelper.showInfo("SQL Error",
-                                                                                e.getMessage(), context);
+                                                                        DialogHelper.
+                                                                                showInfo(context,"SQL Error",e.getMessage(), null);
                                                                     }
                                                                 });
                                                                 e.printStackTrace();
@@ -298,8 +404,8 @@ public class MainActivity extends AppCompatActivity {
                                                 runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        DialogHelper.showInfo("SQL Error",
-                                                                e.getMessage(), context);
+                                                        DialogHelper.showInfo(context,"SQL Error",
+                                                                e.getMessage(), null);
                                                     }
                                                 });
                                                 e.printStackTrace();
@@ -327,8 +433,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     if (getFragmentManager() == null) {
-                        DialogHelper.showInfo("Fragment Manager Error",
-                                "Couldn't get fragment manager", context);
+                        DialogHelper.showInfo(context,"Fragment Manager Error",
+                                "Couldn't get fragment manager", null);
                     }
                     else {
                         dialogHolderOptions.show(getSupportFragmentManager(), "OptionDialog");
@@ -467,12 +573,20 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
             catch (SQLException e) {
-                DialogHelper.showInfo("SQL Error", e.getMessage(), context);
+                DialogHelper.showInfo(context, "SQL Error", e.getMessage(), null);
                 e.printStackTrace();
             }
         }
         else if (currentDir != null){
-            DialogHelper.showInfo("Confirm","Are you sure you want to exit?",context);
+            DialogHelper.showInfo(context, "Confirmation", "Do you really want to exit?",
+                    new DialogHelper.DialogHelperListener() {
+                        @Override
+                        public void onDialogClick() {
+                            Intent i = new Intent(getApplicationContext(), AuthActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    });
         }
     }
 
@@ -498,11 +612,49 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//                                       Private methods
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    private void retrieveAndPost(final String accId, final int uses, final long deadDate) {
+        try {
+            DaoK daoK = DaoK.getInstance(context);
+            daoK.find(accId, new DaoCallbacks.Select<K>() {
+                @Override
+                public void onSelected(K[] selection) {
+                    if (selection != null && selection.length == 1) {
+                        try {
+                            HttpConn client = new HttpConn(context);
+                            client.post(uses, deadDate, RandomGenerator.createToken(),
+                                    selection[0].getPwdBase64());
+                        }
+                        catch (final IOException e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DialogHelper.showInfo(context,"IO Error",
+                                            e.getMessage(), null);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+        } catch (final SQLException excSQL) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    DialogHelper.showInfo(context,"SQL Error",
+                            excSQL.getMessage(), null);
+                }
+            });
+        }
+    }
 
     private void refreshContentRecyclerView() {
         try {
-            daoDirectory.findChildrenAt(currentDir.get_id(),
-                    new DaoCallbacks.Select<Directory>() {
+            daoDirectory.findChildrenAt(currentDir.get_id(), new DaoCallbacks.Select<Directory>() {
                         @Override
                         public void onSelected(final Directory[] selection) {
                             runOnUiThread(new Runnable() {
@@ -554,7 +706,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    DialogHelper.showInfo("SQL Error", e.getMessage(), context);
+                    DialogHelper.showInfo(context, "SQL Error", e.getMessage(), null);
                     e.printStackTrace();
                 }
             });
@@ -585,7 +737,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        DialogHelper.showInfo("SQL Error", e.getMessage(), context);
+                        DialogHelper.showInfo(context,"SQL Error", e.getMessage(), null);
                     }
                 });
                 e.printStackTrace();
@@ -634,7 +786,7 @@ public class MainActivity extends AppCompatActivity {
                 }, directory);
             }
             catch (SQLException e) {
-                DialogHelper.showInfo("SQL Error", e.getMessage(), this);
+                DialogHelper.showInfo(this,"SQL Error", e.getMessage(), null);
             }
         }
         else {

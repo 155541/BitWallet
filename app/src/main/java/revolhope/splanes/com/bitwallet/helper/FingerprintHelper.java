@@ -2,22 +2,18 @@ package revolhope.splanes.com.bitwallet.helper;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.support.v4.app.ActivityCompat;
+
+import androidx.core.app.ActivityCompat;
 import android.widget.Toast;
 
 import javax.crypto.Cipher;
 
 import revolhope.splanes.com.bitwallet.crypto.Cryptography;
-import revolhope.splanes.com.bitwallet.view.MainActivity;
 
 public abstract class FingerprintHelper {
 
@@ -25,7 +21,6 @@ public abstract class FingerprintHelper {
             new char[] {'f','i','n','g','e','r','p','r','i','n','t','.','k','e','y'};
 
     public static Cipher getFingerprintCipher() throws Exception {
-
         Cryptography crypto = new Cryptography();
         if (!crypto.existsAlias(AppUtils.toString(fingerprintIndex))) {
             crypto.newKey(AppUtils.toString(fingerprintIndex));
@@ -39,9 +34,11 @@ public abstract class FingerprintHelper {
     {
         private CancellationSignal cancellationSignal;
         private final Context context;
+        private OnAuthListener onAuthListener;
 
-        public AuthCallback(Context mContext) {
+        public AuthCallback(Context mContext, OnAuthListener mOnAuthListener) {
             context = mContext;
+            onAuthListener = mOnAuthListener;
         }
 
         // Implement the startAuth method,
@@ -65,8 +62,9 @@ public abstract class FingerprintHelper {
         // It provides the error code and error message as its parameters
         @Override
         public void onAuthenticationError(int errMsgId, CharSequence errString) {
-            Toast.makeText(context, "Authentication error:\n" + errString, Toast.LENGTH_LONG)
-                 .show();
+            Toast.makeText(context, "Authentication error:\n" +
+                    errString, Toast.LENGTH_LONG).show();
+            onAuthListener.onAuthenticate(false, errString.toString());
         }
 
         // onAuthenticationFailed is called when the fingerprint does not match
@@ -74,6 +72,7 @@ public abstract class FingerprintHelper {
         @Override
         public void onAuthenticationFailed() {
             Toast.makeText(context, "Authentication failed", Toast.LENGTH_LONG).show();
+            onAuthListener.onAuthenticate(false);
         }
 
         // onAuthenticationHelp is called when a non-fatal error has occurred.
@@ -84,6 +83,7 @@ public abstract class FingerprintHelper {
         public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
             Toast.makeText(context, "Authentication help\n" + helpString, Toast.LENGTH_LONG)
                  .show();
+            onAuthListener.onAuthenticate(false);
         }
 
         // onAuthenticationSucceeded is called when a fingerprint has been successfully matched
@@ -91,16 +91,13 @@ public abstract class FingerprintHelper {
         @Override
         public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
 
-            Intent i = new Intent(context, MainActivity.class);
-            context.startActivity(i);
-            if (context instanceof Activity)
-            {
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                if (vibrator != null) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(200,
-                            VibrationEffect.DEFAULT_AMPLITUDE));
-                }
-            }
+            onAuthListener.onAuthenticate(true);
+        }
+
+        public interface OnAuthListener {
+            void onAuthenticate(boolean isSucceed, String... errorCodes);
         }
     }
+
+
 }

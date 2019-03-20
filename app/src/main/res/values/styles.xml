@@ -1,55 +1,20 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!--THEME-->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
-
+    <!--THEME VARIATIONS-->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="DialogFromRightAnim" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowFullscreen">false</item>
-        <!--<item name="android:windowIsFloating">false</item>-->
-
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
-
-        <item name="android:windowEnterAnimation">@anim/slide_left</item>
-        <item name="android:windowExitAnimation">@anim/slide_right</item>
-    </style>
-
-    <style name="DialogFromBottomAnim" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowFullscreen">false</item>
-        <!--<item name="android:windowIsFloating">false</item>-->
-
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
-
-        <item name="android:windowEnterAnimation">@anim/slide_up</item>
-        <item name="android:windowExitAnimation">@anim/slide_bottom</item>
-    </style>
-
-
-
+    <!--DIALOG-->
     <style name="AppDialogStyle" parent="ThemeOverlay.AppCompat.Light">
         <!--    #WINDOW PARAMS <<<<<<<<<<<<<<<<-->
         <item name="android:windowNoTitle">false</item>
@@ -57,7 +22,6 @@
         <item name="android:windowBackground">@drawable/dialog_background_rounded</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowIsFloating">true</item>
-        <!--    #CHECK IF WORKS <<<<<<<<<<<<<<<<-->
         <!--    #ANIMATIONS     <<<<<<<<<<<<<<<<-->
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
@@ -69,5 +33,22 @@
         <!--    #FONT STYLE     <<<<<<<<<<<<<<<<-->
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
+        <!--    #BUTTONS STYLE  <<<<<<<<<<<<<<<<-->
+        <item name="android:buttonBarPositiveButtonStyle">@style/AppButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/AppButtonStyle</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/AppButtonStyle</item>
+    </style>
+
+    <!--BUTTON-->
+    <style name="AppButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/colorPrimaryDark</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <!--MODAL-->
+    <style name="AppModalStyle" parent="ThemeOverlay.AppCompat.Light">
+
     </style>
 </resources>

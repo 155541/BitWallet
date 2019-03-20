@@ -2,20 +2,16 @@ package revolhope.splanes.com.bitwallet.helper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -40,7 +36,8 @@ public class HttpConn {
         if (wifiManager == null) throw new IOException("Error getting device mac address...");
     }
 
-    public boolean post(@NonNull String token, @NonNull String key) throws IOException {
+    public boolean post(int uses, long deadLine, @NonNull String token, @NonNull String key)
+            throws IOException {
 
         if (conn != null) {
             conn.disconnect();
@@ -57,23 +54,24 @@ public class HttpConn {
             JSONObject requestBody = new JSONObject();
             JSONObject headers = new JSONObject();
 
-            headers.put("Timestamp", Calendar.getInstance().getTimeInMillis());
-
+            headers.put("timestamp", Calendar.getInstance().getTimeInMillis());
             try {
                 Cryptography cryptography = new Cryptography();
                 @SuppressLint("HardwareIds")
                 String auth = cryptography.sha256(wifiManager.getConnectionInfo().getMacAddress());
-                headers.put("Auth", auth);
+                headers.put("auth", auth);
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
 
-            headers.put("Request-Ip", getIp());
-//            TODO: TO CONTINUE
+            headers.put("request_ip", getIp());
+
             requestBody.put("headers", headers);
             requestBody.put("token", token);
             requestBody.put("content", key);
+            requestBody.put("uses", uses);
+            requestBody.put("deadDate", deadLine);
 
             out.writeBytes(requestBody.toString());
             out.flush();

@@ -1,8 +1,8 @@
 package revolhope.splanes.com.bitwallet.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import revolhope.splanes.com.bitwallet.R;
-import revolhope.splanes.com.bitwallet.helper.AppUtils;
 import revolhope.splanes.com.bitwallet.model.Account;
 import revolhope.splanes.com.bitwallet.model.Directory;
 
 public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContentAdapter.Holder> {
 
-    private static final int TYPE_DIR = 352;
+    public static final int TYPE_DIR = 352;
     private static final int TYPE_ACC = 718;
 
     private List<Account> accounts = new ArrayList<>();;
@@ -178,7 +177,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
         Account account = accounts.get(position);
         holder.textView_Name.setText(account.getAccount());
-        holder.textView_Create.setText(String.format("Created on: %s",
+        /*holder.textView_Create.setText(String.format("Created on: %s",
                 AppUtils.format("dd/MM/yyyy",account.getDateCreate())));
         if (account.getDateUpdate() != null && account.getDateUpdate() != 0)
         {
@@ -189,7 +188,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         {
             holder.textView_Expire.setText(String.format("Expires on: %s",
                     AppUtils.format("dd/MM/yyyy", account.getDateExpire())));
-        }
+        }*/
     }
 
     private void bindDirectory(@NonNull HolderDir holder, int position) {
@@ -216,17 +215,11 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     class HolderAccount extends Holder
     {
         private TextView textView_Name;
-        private TextView textView_Create;
-        private TextView textView_Update;
-        private TextView textView_Expire;
 
         HolderAccount (View view)
         {
             super(view);
             textView_Name = view.findViewById(R.id.textView_Name);
-            textView_Create = view.findViewById(R.id.textView_createOn);
-            textView_Update = view.findViewById(R.id.textView_updateOn);
-            textView_Expire = view.findViewById(R.id.textView_expire);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

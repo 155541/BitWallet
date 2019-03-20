@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="colorAppIconBackground">#607D8B</color>
+    <!--<color name="colorAppIconBrand">#ffa726</color>-->
+
     <color name="colorPrimary">#ffa726</color>
     <color name="colorPrimaryDark">#c77800</color>
     <color name="colorAccent">#FFC107</color>
     <!-- orig: ffd95b -->
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorTintIconHolderDir">#D9FFB300</color>
+    <color name="colorPrimaryBackground">#4dFFFF00</color>
     <color name="colorDialogBackground">#B3FFFFFF</color>
-
+    <color name="colorSpinnerBackground">#b3ffa726</color>
 </resources>

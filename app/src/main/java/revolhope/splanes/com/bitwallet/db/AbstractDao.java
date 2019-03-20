@@ -1,7 +1,6 @@
 package revolhope.splanes.com.bitwallet.db;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import java.sql.SQLException;
 

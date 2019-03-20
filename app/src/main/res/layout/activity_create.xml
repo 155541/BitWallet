@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -23,8 +23,10 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/activity_create_title">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btDone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -36,255 +38,375 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp">
 
-            <TextView
-                android:id="@+id/prompt_Id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_id"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            <!--ID-->
+            <ImageView
+                android:id="@+id/iconId"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_id"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_Id"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_Id"
+                tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/prompt_Account"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="48dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_account"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prompt_Id" />
-
-            <TextView
-                android:id="@+id/prompt_URL"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="48dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_url"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prompt_Account" />
-
-            <TextView
-                android:id="@+id/prompt_User"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="48dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_user"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prompt_URL" />
-
-            <TextView
-                android:id="@+id/prompt_Password"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="40dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_password"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText_Brief" />
-
-            <TextView
-                android:id="@+id/textView_Id"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_Id"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:fontFamily="sans-serif-condensed"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_Id"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editText_Account"
-                app:layout_constraintTop_toTopOf="@+id/prompt_Id" />
-
-            <EditText
-                android:id="@+id/editText_Account"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="32dp"
-                android:autofillHints="account"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed"
-                android:hint="@string/hint_mandatory"
-                android:importantForAutofill="auto"
-                android:inputType="textPersonName"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_Account"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/prompt_Account"
-                app:layout_constraintTop_toTopOf="@+id/prompt_Account" />
-
-            <EditText
-                android:id="@+id/editText_URL"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:autofillHints="url"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed"
-                android:hint="@string/hint_optional"
-                android:importantForAutofill="auto"
-                android:inputType="textUri"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_URL"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editText_Account"
-                app:layout_constraintTop_toTopOf="@+id/prompt_URL" />
-
-            <EditText
-                android:id="@+id/editText_User"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:autofillHints="user"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed"
-                android:hint="@string/hint_optional_recommended"
-                android:importantForAutofill="auto"
-                android:inputType="textPersonName|textEmailAddress"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_User"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editText_URL"
-                app:layout_constraintTop_toTopOf="@+id/prompt_User" />
-
-            <EditText
-                android:id="@+id/editText_Password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:autofillHints="password"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed"
-                android:hint="@string/hint_mandatory"
-                android:importantForAutofill="auto"
-                android:inputType="textLongMessage|textMultiLine"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_Password"
-                app:layout_constraintEnd_toStartOf="@+id/iv_copy"
-                app:layout_constraintStart_toStartOf="@+id/editText_User"
-                app:layout_constraintTop_toTopOf="@+id/prompt_Password"
-                tools:ignore="TextFields" />
-
-            <Button
-                android:id="@+id/btGenerate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:background="@android:color/transparent"
-                android:elevation="4dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_button_generate"
-                android:textColor="@color/colorPrimaryDark"
+                android:autofillHints="account"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText_Password" />
+                app:layout_constraintStart_toEndOf="@+id/iconId"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <CheckBox
-                android:id="@+id/checkBox_Expire"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_checkbox_expire"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintBottom_toBottomOf="@+id/btGenerate"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_Id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="account"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="@string/hint_id"
+                    android:importantForAutofill="auto" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--ACCOUNT-->
+            <ImageView
+                android:id="@+id/iconAccount"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_account"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btGenerate" />
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_Account"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_Account"
+                tools:ignore="ContentDescription"/>
 
-            <TextView
-                android:id="@+id/textView_ExpireDate"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_Account"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="account"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-condensed"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/iconAccount"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/checkBox_Expire"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox_Expire" />
+                app:layout_constraintStart_toEndOf="@+id/iconAccount"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_Id">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_Account"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_account"
+                    android:importantForAutofill="auto"
+                    android:autofillHints="account"
+                    android:inputType="textCapSentences"
+                    android:ems="10"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/prompt_Brief"
+                android:id="@+id/help_account"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="40dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="@string/prompt_brief"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prompt_User" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_required"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_Account"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_Account"/>
 
-            <EditText
-                android:id="@+id/editText_Brief"
+            <!--URL-->
+            <ImageView
+                android:id="@+id/iconUrl"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_url"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_URL"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_URL"
+                tools:ignore="ContentDescription"
+                tools:layout_editor_absoluteY="212dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_URL"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:autofillHints="description"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="start|top"
-                android:hint="@string/hint_optional"
-                android:importantForAutofill="auto"
-                android:inputType="textMultiLine"
-                app:layout_constraintBottom_toBottomOf="@+id/prompt_Brief"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                android:autofillHints="url"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editText_Password"
-                app:layout_constraintTop_toTopOf="@+id/prompt_Brief" />
+                app:layout_constraintStart_toEndOf="@+id/iconUrl"
+                app:layout_constraintTop_toBottomOf="@+id/help_account">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_URL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="url"
+                    android:ems="10"
+                    android:hint="@string/hint_url"
+                    android:importantForAutofill="auto"
+                    android:inputType="textWebEditText" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/help_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_optional_recommended"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_URL"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_URL"/>
+
+            <!--USER-->
+            <ImageView
+                android:id="@+id/iconUser"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_user"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_User"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_User"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_User"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="user"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iconUser"
+                app:layout_constraintTop_toBottomOf="@+id/help_url">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_User"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_user"
+                    android:importantForAutofill="auto"
+                    android:inputType="text"
+                    android:autofillHints="user"
+                    android:ems="10"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/help_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_optional_recommended"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_User"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_User"/>
+
+            <!--PWD-->
+            <ImageView
+                android:id="@+id/iconPwd"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_key"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_Password"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_Password"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_Password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="pwd"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/iv_copy"
+                app:layout_constraintStart_toEndOf="@+id/iconPwd"
+                app:layout_constraintTop_toBottomOf="@+id/help_user">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_Password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_pwd"
+                    android:importantForAutofill="auto"
+                    android:autofillHints="pwd"
+                    android:inputType="textLongMessage|textMultiLine"
+                    android:ems="10"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
-                android:visibility="gone"
                 android:id="@+id/iv_copy"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/editText_Password"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_Password"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/editText_Password"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_Password"
                 app:srcCompat="@drawable/ic_copy"
-                android:tint="@color/colorPrimaryDark"
                 android:alpha=".75"
-                android:elevation="4dp"
+                android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
-        </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/help_pwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_required"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_Password"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_Password"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btGenerate"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@color/colorPrimaryDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/transparent"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/prompt_button_generate"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="@+id/inputLayout_Password"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_Password" />
+
+            <!--BRIEF-->
+            <ImageView
+                android:id="@+id/iconBrief"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_brief"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_Brief"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_Brief"
+                tools:ignore="ContentDescription"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_Brief"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="brief"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/iconBrief"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iconBrief"
+                app:layout_constraintTop_toBottomOf="@+id/btGenerate">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_Brief"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_brief"
+                    android:importantForAutofill="auto"
+                    android:autofillHints="brief"
+                    android:inputType="textLongMessage|textMultiLine"
+                    android:ems="10"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/help_brief"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_optional"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_Brief"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_Brief"/>
+
+            <!--EXPIRATION DATE-->
+            <ImageView
+                android:id="@+id/iconExpire"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_expiration_date"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_ExpirationDate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_ExpirationDate"
+                tools:ignore="ContentDescription"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_ExpirationDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="brief"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/switch_ExpirationDate"
+                app:layout_constraintStart_toEndOf="@+id/iconExpire"
+                app:layout_constraintTop_toBottomOf="@+id/help_brief">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_ExpirationDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_expiration_date"
+                    android:importantForAutofill="auto"
+                    android:autofillHints="brief"
+                    android:ems="10"
+                    android:enabled="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_ExpirationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/inputLayout_ExpirationDate"
+                app:layout_constraintBottom_toBottomOf="@+id/inputLayout_ExpirationDate"/>
+
+            <TextView
+                android:id="@+id/help_expirationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="32dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/help_optional_recommended"
+                app:layout_constraintTop_toBottomOf="@+id/inputLayout_ExpirationDate"
+                app:layout_constraintStart_toStartOf="@+id/inputLayout_ExpirationDate"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
